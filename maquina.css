@@ -1,0 +1,149 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    margin-top: 3rem;
+    align-items: center;
+}
+
+.header .logo {
+    margin: 0 20rem 0 15rem;
+}
+
+.nav-header a {
+    text-decoration: none;
+    font-size: 20px;
+    color: black;
+}
+
+.nav-header {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.content {
+    display: flex;
+    margin-top: 5rem;
+    position: absolute;
+}
+
+.content .image img {
+    width: 600px;
+    margin-left: 2rem;
+}
+
+.content .text {
+    margin: 0 10rem 0 15rem;
+}
+
+.content .text h1 {
+    font-size: 60px;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.content .text p {
+    font-size: 24px;
+    color: #1C1C1C;
+}
+
+.content-links {
+    display: flex;
+    margin-top: 60px;
+    gap: 15px;
+}
+
+.btn-protocolos {
+    background-color: #ab96807c;
+    padding: 15px 20px;
+    border-radius: 50px;
+    font-size: 18px;
+    text-decoration: none;
+    color: black;
+}
+
+.btn-consulta {
+    padding: 15px 20px;
+    border: 1px solid black;
+    border-radius: 50px;
+    font-size: 18px;
+    text-decoration: none;
+    color: black;
+}
+
+.stats {
+    display: flex;
+    gap: 50px;
+    margin: 5rem 0 0 15rem;
+}
+
+.stat h1 {
+    font-size: 40px;
+    font-weight: 500;
+}
+
+.stat h2 {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.infos-content {
+    display: flex;
+    margin: 42rem 0 0 0;
+}
+
+.infoMaquina {
+    display: flex;
+    background-color: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    position: absolute;
+    margin-left: 45rem;
+}
+
+.info-column {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+}
+
+.b-white {
+    background-color: white;
+}
+
+.info-column a {
+    text-decoration: none;
+    color: black;
+}
+
+.info-column p {
+    font-size: 18px;
+    color: #1C1C1C;
+    margin-bottom: 25px;
+}
+
+.info-column h1 {
+    font-size: 32px;
+    color: #1C1C1C;
+    font-weight: 400;
+    margin: 10px 0 15px 0;
+}
+
+.infoMaquina img {
+    background-color: white;
+    margin-left: 30px;
+}
+
+.img-clinica {
+    margin-top: 15rem;
+    width: 100%;
+}
+
+.img-retangulo {
+    width: 1455px;
+    height: 496px;
+    border-radius: 10px;
+    background-color: #AB9680;
+    position: absolute;
+    margin-top: 10rem;
+}

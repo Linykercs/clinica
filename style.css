@@ -1,27 +1,44 @@
-.conteudo-home-servicos {
+.conteudo-maquina {
+    margin: 7rem 0 7rem 7rem;
+}
+
+.text-maquina {
     display: flex;
-    margin: 3rem 0 0 20rem;
-    gap: 4rem;
 }
 
-.conteudo-home-servicos .pessoa {
-    width: 450px;
+.texto {
+    margin: 5rem 0 0 2rem;
 }
 
-.conteudo-home-servicos .desenho {
-    width: 800px;
+.hiperbarica {
+    margin-left: 13rem;
 }
 
-#section-cards-servicos {
+.risco {
+    margin: 1rem 0 5rem 0;
+}
+
+.text-maquina h1 {
+    font-size: 40px;
+    font-weight: 400;
+    margin-left: 1.5rem;
+}
+
+.text-maquina p {
+    display: flex;
+    text-align: center;
+    font-size: 20px;
+}
+
+#section-cards {
     background-color: #ab968079;
     padding: 5rem 7rem;
     display: flex;
     flex-direction: column;
     gap: 5rem;
-    margin: 7rem 0 0 0;
 }
 
-#section-cards-servicos h1 {
+#section-cards h1 {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,7 +51,7 @@
     padding-left: 1rem;
 }
 
-#section-cards-servicos p {
+#section-cards p {
     font-size: 23px;
 }
 
@@ -55,15 +72,4 @@
 .card-content {
     width: 290px;
     height: 400px;
-}
-
-.container-footer {
-    background-color: #ab968079;
-    height: 700px;
-    padding: 3rem;
-}
-
-.content-footer {
-    background-color: #AB9680;
-    height: 100%;
 }
