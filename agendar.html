@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Agendar Consulta – Flávia Franco</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f0ede8;
+  --taupe: #b5a594;
+  --taupe-dark: #9a8a7a;
+  --taupe-light: #d4c8bc;
+  --cream: #faf8f5;
+  --text: #3a3028;
+  --text-muted: #9e8e7e;
+  --white: #ffffff;
+  --success: #6a9e7f;
+  --error: #b04040;
+  --step-active: #b5a594;
+  --step-done: #6a9e7f;
+}
+
+html, body { min-height: 100%; font-family: 'Raleway', sans-serif; background: var(--bg); color: var(--text); }
+
+/* ── Header ── */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 48px;
+  background: var(--cream);
+  border-bottom: 1px solid var(--taupe-light);
+}
+.header__brand { font-family: 'Raleway', sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0.18em; color: var(--text); text-transform: uppercase; text-decoration: none; }
+.header__sub { font-size: 10px; letter-spacing: 0.22em; color: var(--text-muted); text-transform: uppercase; margin-top: 3px; }
+.header__back { font-size: 11px; letter-spacing: 0.08em; color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+.header__back:hover { color: var(--text); }
+
+/* ── Page layout ── */
+.page { max-width: 680px; margin: 0 auto; padding: 48px 24px 80px; }
+
+/* ── Title ── */
+.page__title { font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 300; color: var(--text); letter-spacing: 0.02em; margin-bottom: 6px; }
+.page__sub { font-size: 13px; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 40px; }
+
+/* ── Steps indicator ── */
+.steps {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 40px;
+}
+.step {
+  display: flex; align-items: center; gap: 10px;
+  flex: 1;
+}
+.step:last-child { flex: 0; }
+.step__circle {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1.5px solid var(--taupe-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: var(--text-muted);
+  background: var(--cream);
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+.step.active .step__circle { border-color: var(--taupe); background: var(--taupe); color: white; }
+.step.done .step__circle { border-color: var(--step-done); background: var(--step-done); color: white; }
+.step__label { font-size: 10px; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; white-space: nowrap; }
+.step.active .step__label { color: var(--text); font-weight: 600; }
+.step.done .step__label { color: var(--step-done); }
+.step__line { flex: 1; height: 1px; background: var(--taupe-light); margin: 0 12px; }
+.step.done .step__line { background: var(--step-done); }
+
+/* ── Card ── */
+.card {
+  background: var(--cream);
+  border-radius: 12px;
+  padding: 36px;
+  box-shadow: 0 2px 24px rgba(58,48,40,0.07);
+  animation: fadeUp 0.4s ease both;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Section title ── */
+.section__title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 24px; }
+
+/* ── Service grid ── */
+.servicos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.servico-card {
+  border: 1.5px solid var(--taupe-light);
+  border-radius: 10px;
+  padding: 18px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--white);
+}
+.servico-card:hover { border-color: var(--taupe); box-shadow: 0 2px 12px rgba(181,165,148,0.2); }
+.servico-card.selected { border-color: var(--taupe); background: #f5f0ea; box-shadow: 0 2px 16px rgba(181,165,148,0.3); }
+.servico-card__nome { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+.servico-card__dur { font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
+.servico-card__check { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--taupe-light); display: inline-flex; align-items: center; justify-content: center; float: right; margin-top: -2px; transition: all 0.2s; }
+.servico-card.selected .servico-card__check { background: var(--taupe); border-color: var(--taupe); }
+.servico-card.selected .servico-card__check::after { content: '✓'; font-size: 10px; color: white; }
+
+/* ── Date picker ── */
+.date-section { margin-bottom: 28px; }
+.date-label { font-size: 10px; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
+.date-input {
+  width: 100%; height: 44px;
+  border: 1.5px solid var(--taupe-light);
+  border-radius: 8px;
+  padding: 0 14px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px; color: var(--text);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.date-input:focus { border-color: var(--taupe); }
+
+/* ── Horários ── */
+.horarios-titulo { font-size: 10px; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; }
+.horarios-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.horario-btn {
+  height: 40px; border: 1.5px solid var(--taupe-light);
+  border-radius: 8px; background: var(--white);
+  font-family: 'Raleway', sans-serif; font-size: 13px; font-weight: 500;
+  color: var(--text); cursor: pointer; transition: all 0.2s;
+}
+.horario-btn:hover { border-color: var(--taupe); background: #f5f0ea; }
+.horario-btn.selected { border-color: var(--taupe); background: var(--taupe); color: white; }
+.horarios-vazio { font-size: 13px; color: var(--text-muted); text-align: center; padding: 20px 0; }
+
+/* ── Form fields ── */
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field.full { grid-column: 1 / -1; }
+.field label { font-size: 10px; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; }
+.field input, .field textarea {
+  height: 44px; border: 1.5px solid var(--taupe-light);
+  border-radius: 8px; padding: 0 14px;
+  font-family: 'Raleway', sans-serif; font-size: 14px; color: var(--text);
+  background: var(--white); outline: none; transition: border-color 0.2s;
+}
+.field input:focus, .field textarea:focus { border-color: var(--taupe); }
+.field textarea { height: 88px; padding: 12px 14px; resize: none; }
+
+/* ── Resumo ── */
+.resumo {
+  background: #f5f0ea;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 28px;
+}
+.resumo__linha { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--taupe-light); }
+.resumo__linha:last-child { border: none; }
+.resumo__chave { font-size: 11px; letter-spacing: 0.06em; color: var(--text-muted); text-transform: uppercase; }
+.resumo__valor { font-size: 13px; font-weight: 500; color: var(--text); }
+
+/* ── Botões ── */
+.btn-row { display: flex; gap: 12px; margin-top: 28px; }
+.btn {
+  height: 46px; border: none; border-radius: 8px;
+  font-family: 'Raleway', sans-serif; font-size: 13px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s; flex: 1;
+}
+.btn--primary { background: var(--taupe); color: white; }
+.btn--primary:hover { background: var(--taupe-dark); }
+.btn--primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn--secondary { background: transparent; color: var(--text-muted); border: 1.5px solid var(--taupe-light); flex: 0; padding: 0 24px; }
+.btn--secondary:hover { border-color: var(--taupe); color: var(--text); }
+
+/* ── Loading ── */
+.loading { text-align: center; padding: 24px 0; color: var(--text-muted); font-size: 13px; }
+.spinner { width: 24px; height: 24px; border: 2px solid var(--taupe-light); border-top-color: var(--taupe); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Erro ── */
+.erro-msg { font-size: 12px; color: var(--error); margin-top: 12px; display: none; }
+.erro-msg.visivel { display: block; }
+
+/* ── Sucesso ── */
+.sucesso {
+  text-align: center; padding: 48px 24px;
+  animation: fadeUp 0.5s ease both;
+}
+.sucesso__icon { font-size: 48px; margin-bottom: 20px; }
+.sucesso__title { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 400; color: var(--text); margin-bottom: 12px; }
+.sucesso__msg { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 32px; }
+.sucesso__detalhe { background: #f5f0ea; border-radius: 10px; padding: 16px 20px; margin-bottom: 28px; text-align: left; }
+
+@media (max-width: 560px) {
+  .servicos-grid { grid-template-columns: 1fr; }
+  .horarios-grid { grid-template-columns: repeat(3, 1fr); }
+  .fields { grid-template-columns: 1fr; }
+  .field.full { grid-column: 1; }
+  .header { padding: 16px 20px; }
+  .page { padding: 32px 16px 60px; }
+  .card { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div>
+    <div class="header__brand">Flávia Franco</div>
+    <div class="header__sub">Saúde Regenerativa</div>
+  </div>
+  <a href="home.html" class="header__back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Voltar ao site
+  </a>
+</header>
+
+<div class="page">
+  <h1 class="page__title">Agendar Consulta</h1>
+  <p class="page__sub">Escolha o serviço, data e horário de sua preferência</p>
+
+  <!-- Steps -->
+  <div class="steps" id="steps">
+    <div class="step active" id="step1">
+      <div class="step__circle">1</div>
+      <div class="step__label">Serviço</div>
+    </div>
+    <div class="step__line"></div>
+    <div class="step" id="step2">
+      <div class="step__circle">2</div>
+      <div class="step__label">Data & Hora</div>
+    </div>
+    <div class="step__line"></div>
+    <div class="step" id="step3">
+      <div class="step__circle">3</div>
+      <div class="step__label">Seus dados</div>
+    </div>
+    <div class="step__line"></div>
+    <div class="step" id="step4">
+      <div class="step__circle">4</div>
+      <div class="step__label">Confirmação</div>
+    </div>
+  </div>
+
+  <!-- Card conteúdo -->
+  <div class="card" id="cardContent"></div>
+</div>
+
+<script>
+const API_URL = "http://localhost:3000/api";
+
+let estado = {
+  etapa: 1,
+  servico: null,
+  data: null,
+  horario: null,
+  nome: "", email: "", telefone: "", obs: ""
+};
+
+async function get(path) {
+  const res  = await fetch(`${API_URL}${path}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.erro || "Erro");
+  return data;
+}
+
+async function post(path, body) {
+  const res  = await fetch(`${API_URL}${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.erro || "Erro");
+  return data;
+}
+
+function atualizarSteps() {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById(`step${i}`);
+    el.className = "step" + (i < estado.etapa ? " done" : i === estado.etapa ? " active" : "");
+  }
+}
+
+function renderEtapa() {
+  atualizarSteps();
+  const card = document.getElementById("cardContent");
+  card.style.animation = "none";
+  card.offsetHeight;
+  card.style.animation = "fadeUp 0.4s ease both";
+
+  if (estado.etapa === 1) renderServicos(card);
+  else if (estado.etapa === 2) renderDataHora(card);
+  else if (estado.etapa === 3) renderDados(card);
+  else if (estado.etapa === 4) renderConfirmacao(card);
+}
+
+async function renderServicos(card) {
+  card.innerHTML = `<div class="loading"><div class="spinner"></div>Carregando serviços...</div>`;
+  try {
+    const servicos = await get("/servicos");
+    card.innerHTML = `
+      <h2 class="section__title">Qual serviço você deseja?</h2>
+      <div class="servicos-grid" id="servicosGrid"></div>
+      <div class="btn-row"><button class="btn btn--primary" onclick="irParaEtapa2()" disabled id="btnServico">Continuar</button></div>`;
+
+    const grid = document.getElementById("servicosGrid");
+    servicos.forEach(s => {
+      const div = document.createElement("div");
+      div.className = "servico-card" + (estado.servico?._id === s._id ? " selected" : "");
+      div.innerHTML = `
+        <span class="servico-card__check"></span>
+        <div class="servico-card__nome">${s.nome}</div>
+        <div class="servico-card__dur">${s.duracao_min} minutos</div>`;
+      div.onclick = () => {
+        estado.servico = s;
+        document.querySelectorAll(".servico-card").forEach(c => c.classList.remove("selected"));
+        div.classList.add("selected");
+        document.getElementById("btnServico").disabled = false;
+      };
+      grid.appendChild(div);
+    });
+    if (estado.servico) document.getElementById("btnServico").disabled = false;
+  } catch (err) {
+    card.innerHTML = `<p style="color:var(--error);text-align:center;padding:24px">Erro ao carregar serviços. Verifique se o servidor está rodando.</p>`;
+  }
+}
+
+function irParaEtapa2() {
+  if (!estado.servico) return;
+  estado.etapa = 2;
+  renderEtapa();
+}
+
+function renderDataHora(card) {
+  const hoje = new Date();
+  hoje.setDate(hoje.getDate() + 1);
+  const minDate = hoje.toISOString().split("T")[0];
+
+  card.innerHTML = `
+    <h2 class="section__title">Escolha a data e horário</h2>
+    <div class="date-section">
+      <div class="date-label">Data da consulta</div>
+      <input type="date" class="date-input" id="dataInput" min="${minDate}" value="${estado.data || ""}"/>
+    </div>
+    <div class="horarios-titulo">Horários disponíveis</div>
+    <div id="horariosContainer"><p class="horarios-vazio">Selecione uma data para ver os horários disponíveis.</p></div>
+    <p class="erro-msg" id="erroData"></p>
+    <div class="btn-row">
+      <button class="btn btn--secondary" onclick="voltarEtapa()">Voltar</button>
+      <button class="btn btn--primary" onclick="irParaEtapa3()" disabled id="btnData">Continuar</button>
+    </div>`;
+
+  document.getElementById("dataInput").addEventListener("change", async (e) => {
+    estado.data   = e.target.value;
+    estado.horario = null;
+    document.getElementById("btnData").disabled = true;
+    await carregarHorarios(estado.data);
+  });
+
+  if (estado.data) carregarHorarios(estado.data);
+}
+
+async function carregarHorarios(data) {
+  const container = document.getElementById("horariosContainer");
+  container.innerHTML = `<div class="loading"><div class="spinner"></div>Buscando horários...</div>`;
+  try {
+    const horarios = await get(`/horarios?data=${data}&servico=${estado.servico._id}`);
+    if (!horarios.length) {
+      container.innerHTML = `<p class="horarios-vazio">Nenhum horário disponível nesta data. Tente outro dia.</p>`;
+      return;
+    }
+    const grid = document.createElement("div");
+    grid.className = "horarios-grid";
+    horarios.forEach(h => {
+      const btn = document.createElement("button");
+      btn.className = "horario-btn" + (estado.horario?._id === h._id ? " selected" : "");
+      btn.textContent = h.hora_inicio;
+      btn.onclick = () => {
+        estado.horario = h;
+        document.querySelectorAll(".horario-btn").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        document.getElementById("btnData").disabled = false;
+      };
+      grid.appendChild(btn);
+    });
+    container.innerHTML = "";
+    container.appendChild(grid);
+    if (estado.horario) document.getElementById("btnData").disabled = false;
+  } catch (err) {
+    container.innerHTML = `<p class="horarios-vazio" style="color:var(--error)">Erro ao buscar horários.</p>`;
+  }
+}
+
+function irParaEtapa3() {
+  if (!estado.data || !estado.horario) return;
+  estado.etapa = 3;
+  renderEtapa();
+}
+
+function renderDados(card) {
+  card.innerHTML = `
+    <h2 class="section__title">Seus dados</h2>
+    <div class="fields">
+      <div class="field full">
+        <label>Nome completo</label>
+        <input type="text" id="fNome" placeholder="Como prefere ser chamado?" value="${estado.nome}"/>
+      </div>
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="fEmail" placeholder="seu@email.com" value="${estado.email}"/>
+      </div>
+      <div class="field">
+        <label>Telefone / WhatsApp</label>
+        <input type="tel" id="fTel" placeholder="(34) 99999-0000" value="${estado.telefone}"/>
+      </div>
+      <div class="field full">
+        <label>Observações (opcional)</label>
+        <textarea id="fObs" placeholder="Alguma informação importante para a consulta?">${estado.obs}</textarea>
+      </div>
+    </div>
+    <p class="erro-msg" id="erroDados"></p>
+    <div class="btn-row">
+      <button class="btn btn--secondary" onclick="voltarEtapa()">Voltar</button>
+      <button class="btn btn--primary" onclick="irParaEtapa4()">Revisar</button>
+    </div>`;
+}
+
+function irParaEtapa4() {
+  const nome  = document.getElementById("fNome").value.trim();
+  const email = document.getElementById("fEmail").value.trim();
+  const tel   = document.getElementById("fTel").value.trim();
+  const obs   = document.getElementById("fObs").value.trim();
+  const erro  = document.getElementById("erroDados");
+
+  if (!nome || !email || !tel) {
+    erro.textContent = "Preencha nome, e-mail e telefone.";
+    erro.classList.add("visivel");
+    return;
+  }
+  if (!email.includes("@")) {
+    erro.textContent = "Informe um e-mail válido.";
+    erro.classList.add("visivel");
+    return;
+  }
+
+  estado.nome = nome; estado.email = email; estado.telefone = tel; estado.obs = obs;
+  estado.etapa = 4;
+  renderEtapa();
+}
+
+function renderConfirmacao(card) {
+  const dataFmt = new Date(estado.data + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+
+  card.innerHTML = `
+    <h2 class="section__title">Confirme seu agendamento</h2>
+    <div class="resumo">
+      <div class="resumo__linha"><span class="resumo__chave">Serviço</span><span class="resumo__valor">${estado.servico.nome}</span></div>
+      <div class="resumo__linha"><span class="resumo__chave">Duração</span><span class="resumo__valor">${estado.servico.duracao_min} minutos</span></div>
+      <div class="resumo__linha"><span class="resumo__chave">Data</span><span class="resumo__valor">${dataFmt}</span></div>
+      <div class="resumo__linha"><span class="resumo__chave">Horário</span><span class="resumo__valor">${estado.horario.hora_inicio}</span></div>
+      <div class="resumo__linha"><span class="resumo__chave">Paciente</span><span class="resumo__valor">${estado.nome}</span></div>
+      <div class="resumo__linha"><span class="resumo__chave">E-mail</span><span class="resumo__valor">${estado.email}</span></div>
+      <div class="resumo__linha"><span class="resumo__chave">Telefone</span><span class="resumo__valor">${estado.telefone}</span></div>
+      ${estado.obs ? `<div class="resumo__linha"><span class="resumo__chave">Observações</span><span class="resumo__valor">${estado.obs}</span></div>` : ""}
+    </div>
+    <p class="erro-msg" id="erroConfirm"></p>
+    <div class="btn-row">
+      <button class="btn btn--secondary" onclick="voltarEtapa()">Voltar</button>
+      <button class="btn btn--primary" id="btnConfirmar" onclick="confirmarAgendamento()">Confirmar agendamento</button>
+    </div>`;
+}
+
+async function confirmarAgendamento() {
+  const btn  = document.getElementById("btnConfirmar");
+  const erro = document.getElementById("erroConfirm");
+  btn.disabled = true; btn.textContent = "Agendando...";
+  erro.classList.remove("visivel");
+
+  try {
+    await post("/agendamentos", {
+      horario_id:        estado.horario._id,
+      paciente_nome:     estado.nome,
+      paciente_email:    estado.email,
+      paciente_telefone: estado.telefone,
+      observacoes:       estado.obs,
+    });
+    mostrarSucesso();
+  } catch (err) {
+    erro.textContent = err.message;
+    erro.classList.add("visivel");
+    btn.disabled = false;
+    btn.textContent = "Confirmar agendamento";
+  }
+}
+
+function mostrarSucesso() {
+  const dataFmt = new Date(estado.data + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
+  document.getElementById("steps").style.display = "none";
+  const card = document.getElementById("cardContent");
+  card.innerHTML = `
+    <div class="sucesso">
+      <div class="sucesso__icon">✦</div>
+      <h2 class="sucesso__title">Consulta agendada!</h2>
+      <p class="sucesso__msg">Seu agendamento foi confirmado com sucesso.<br>Enviaremos um lembrete para <strong>${estado.email}</strong>.</p>
+      <div class="sucesso__detalhe">
+        <div class="resumo__linha"><span class="resumo__chave">Serviço</span><span class="resumo__valor">${estado.servico.nome}</span></div>
+        <div class="resumo__linha"><span class="resumo__chave">Data</span><span class="resumo__valor">${dataFmt} às ${estado.horario.hora_inicio}</span></div>
+        <div class="resumo__linha" style="border:none"><span class="resumo__chave">Paciente</span><span class="resumo__valor">${estado.nome}</span></div>
+      </div>
+      <div class="btn-row" style="justify-content:center">
+        <button class="btn btn--primary" style="max-width:240px" onclick="novoAgendamento()">Fazer outro agendamento</button>
+      </div>
+      <a href="home.html" style="display:block;margin-top:16px;font-size:12px;color:var(--text-muted);text-decoration:none;letter-spacing:0.06em">← Voltar ao site</a>
+    </div>`;
+}
+
+function novoAgendamento() {
+  estado = { etapa: 1, servico: null, data: null, horario: null, nome: "", email: "", telefone: "", obs: "" };
+  document.getElementById("steps").style.display = "flex";
+  renderEtapa();
+}
+
+function voltarEtapa() {
+  estado.etapa--;
+  renderEtapa();
+}
+
+renderEtapa();
+</script>
+</body>
+</html>

@@ -1,473 +1,267 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Agendamentos – Flávia Franco</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #f5f3ef;
-      --sidebar-bg: #b5a594;
-      --sidebar-w: 56px;
-      --taupe: #b5a594;
-      --taupe-light: #cec0b0;
-      --card-bg: #c9b9a8;
-      --row-bg: #ede8e2;
-      --row-border: #d4c9bc;
-      --text-main: #3a3028;
-      --text-muted: #9e8e7e;
-      --grid-line: #e0dbd4;
-      --white: #ffffff;
-      --header-h: 56px;
-      --btn-bg: #b5a594;
-      --btn-text: #fff;
-    }
-
-    html, body { height: 100%; font-family: 'Raleway', sans-serif; background: var(--bg); }
-
-    /* ── Layout ── */
-    .app { display: flex; height: 100vh; overflow: hidden; }
-
-    /* ── Sidebar ── */
-    .sidebar {
-      width: var(--sidebar-w);
-      background: var(--sidebar-bg);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16px 0 24px;
-      flex-shrink: 0;
-      z-index: 10;
-    }
-    .sidebar__logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 400;
-      color: rgba(255,255,255,0.85);
-      margin-bottom: 32px;
-      line-height: 1;
-      text-align: center;
-      padding: 0 6px;
-    }
-    .sidebar__nav { display: flex; flex-direction: column; gap: 8px; width: 100%; align-items: center; }
-    .nav-item {
-      width: 38px; height: 38px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 6px; cursor: pointer;
-      transition: background 0.18s;
-      color: rgba(255,255,255,0.75);
-    }
-    .nav-item:hover { background: rgba(255,255,255,0.18); color: #fff; }
-    .nav-item.active { background: rgba(255,255,255,0.25); color: #fff; }
-    .nav-item svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; }
-
-    /* ── Main ── */
-    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--white); }
-
-    /* ── Header ── */
-    .header {
-      height: var(--header-h);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 32px;
-      border-bottom: 1px solid var(--grid-line);
-      flex-shrink: 0;
-    }
-    .header__title {
-      font-family: 'Raleway', sans-serif;
-      font-size: 17px; font-weight: 400;
-      color: var(--text-main); letter-spacing: 0.02em;
-    }
-    .header__avatar {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: var(--grid-line);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: background 0.18s;
-    }
-    .header__avatar:hover { background: #ccc9c2; }
-    .header__avatar svg { width: 18px; height: 18px; stroke: var(--text-muted); fill: none; stroke-width: 1.6; }
-
-    /* ── Content ── */
-    .content { flex: 1; padding: 24px 28px; overflow: hidden; display: flex; flex-direction: column; }
-
-    /* ── Card ── */
-    .card {
-      flex: 1;
-      background: var(--card-bg);
-      border-radius: 10px;
-      padding: 18px 18px 14px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    /* ── Toolbar ── */
-    .toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 16px;
-      flex-shrink: 0;
-    }
-    .toolbar__group {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .toolbar__group label {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      color: rgba(255,255,255,0.85);
-    }
-    .toolbar__group input {
-      height: 30px;
-      width: 160px;
-      background: #fff;
-      border: none;
-      border-radius: 20px;
-      padding: 0 12px;
-      font-family: 'Raleway', sans-serif;
-      font-size: 12px;
-      color: var(--text-main);
-      outline: none;
-    }
-    .toolbar__group input:focus { box-shadow: 0 0 0 2px rgba(255,255,255,0.5); }
-
-    .btn-new {
-      height: 30px;
-      padding: 0 16px;
-      background: var(--white);
-      border: none;
-      border-radius: 20px;
-      font-family: 'Raleway', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      cursor: pointer;
-      align-self: flex-end;
-      white-space: nowrap;
-      transition: background 0.18s, box-shadow 0.18s;
-    }
-    .btn-new:hover { background: #f0ece6; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-
-    /* ── Table ── */
-    .table-wrap {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .table-wrap::-webkit-scrollbar { width: 5px; }
-    .table-wrap::-webkit-scrollbar-track { background: transparent; }
-    .table-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }
-
-    .row {
-      display: flex;
-      align-items: center;
-      background: var(--row-bg);
-      border-radius: 20px;
-      padding: 0 14px;
-      height: 36px;
-      gap: 10px;
-      flex-shrink: 0;
-      animation: fadeIn 0.3s ease both;
-    }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-    .row__bar {
-      flex: 1;
-      height: 18px;
-      background: var(--row-border);
-      border-radius: 10px;
-      overflow: hidden;
-      position: relative;
-    }
-    /* filled portion — width driven by inline style */
-    .row__fill {
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      background: #c4b4a3;
-      border-radius: 10px;
-    }
-
-    .row__text {
-      position: absolute;
-      left: 12px; top: 50%;
-      transform: translateY(-50%);
-      font-size: 11px;
-      color: var(--text-main);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: calc(100% - 20px);
-    }
-
-    .row__actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-    .row__btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 2px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: color 0.15s;
-    }
-    .row__btn:hover.edit { color: #7a6a5a; }
-    .row__btn:hover.del  { color: #b04040; }
-    .row__btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.6; }
-
-    /* ── Modal ── */
-    .modal-backdrop {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.25);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-backdrop.open { display: flex; }
-    .modal {
-      background: #fff;
-      border-radius: 10px;
-      padding: 28px 28px 22px;
-      width: 340px;
-      box-shadow: 0 16px 48px rgba(0,0,0,0.18);
-    }
-    .modal__title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px; font-weight: 400;
-      color: var(--text-main);
-      margin-bottom: 20px;
-    }
-    .modal__field { margin-bottom: 14px; }
-    .modal__field label { display: block; font-size: 10px; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 5px; }
-    .modal__field input {
-      width: 100%; height: 34px;
-      border: 1px solid var(--grid-line);
-      border-radius: 6px;
-      padding: 0 10px;
-      font-family: 'Raleway', sans-serif;
-      font-size: 13px; color: var(--text-main);
-      outline: none;
-    }
-    .modal__field input:focus { border-color: var(--taupe); }
-    .modal__actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-    .modal__btn {
-      height: 32px; padding: 0 18px;
-      border: none; border-radius: 6px;
-      font-family: 'Raleway', sans-serif;
-      font-size: 12px; font-weight: 500;
-      cursor: pointer; transition: background 0.15s;
-    }
-    .modal__btn--cancel { background: var(--grid-line); color: var(--text-muted); }
-    .modal__btn--cancel:hover { background: #d4cfc8; }
-    .modal__btn--save { background: var(--taupe); color: #fff; }
-    .modal__btn--save:hover { background: var(--taupe-light); }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Agendamentos – Flávia Franco</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:#f5f3ef;--sidebar-bg:#b5a594;--sidebar-w:56px;--taupe:#b5a594;
+  --taupe-light:#cec0b0;--card-bg:#c9b9a8;--row-bg:#ede8e2;--row-border:#d4c9bc;
+  --text-main:#3a3028;--text-muted:#9e8e7e;--grid-line:#e0dbd4;--white:#ffffff;
+  --header-h:56px;
+}
+html,body{height:100%;font-family:'Raleway',sans-serif;background:var(--bg);}
+.app{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:var(--sidebar-w);background:var(--sidebar-bg);display:flex;flex-direction:column;align-items:center;padding:16px 0 24px;flex-shrink:0;z-index:10;}
+.sidebar__logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:rgba(255,255,255,0.85);margin-bottom:32px;}
+.sidebar__nav{display:flex;flex-direction:column;gap:8px;width:100%;align-items:center;}
+.nav-item{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;transition:background 0.18s;color:rgba(255,255,255,0.75);text-decoration:none;}
+.nav-item:hover{background:rgba(255,255,255,0.18);color:#fff;}
+.nav-item.active{background:rgba(255,255,255,0.25);color:#fff;}
+.nav-item svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--white);}
+.header{height:var(--header-h);display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--grid-line);flex-shrink:0;}
+.header__title{font-size:17px;font-weight:400;color:var(--text-main);letter-spacing:0.02em;}
+.header__right{display:flex;align-items:center;gap:12px;}
+.header__admin{font-size:12px;color:var(--text-muted);}
+.header__avatar{width:36px;height:36px;border-radius:50%;background:var(--grid-line);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.header__avatar svg{width:18px;height:18px;stroke:var(--text-muted);fill:none;stroke-width:1.6;}
+.content{flex:1;padding:24px 28px;overflow:hidden;display:flex;flex-direction:column;}
+.card{flex:1;background:var(--card-bg);border-radius:10px;padding:18px 18px 14px;display:flex;flex-direction:column;overflow:hidden;}
+.toolbar{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px;flex-shrink:0;}
+.toolbar__group{display:flex;flex-direction:column;gap:3px;}
+.toolbar__group label{font-size:10px;font-weight:500;letter-spacing:0.08em;color:rgba(255,255,255,0.85);}
+.toolbar__group input,.toolbar__group select{height:30px;width:160px;background:#fff;border:none;border-radius:20px;padding:0 12px;font-family:'Raleway',sans-serif;font-size:12px;color:var(--text-main);outline:none;}
+.btn-new{height:30px;padding:0 16px;background:#fff;border:none;border-radius:20px;font-family:'Raleway',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.06em;color:var(--text-muted);cursor:pointer;white-space:nowrap;}
+.btn-new:hover{background:#f0ece6;}
+.table-wrap{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:5px;}
+.table-wrap::-webkit-scrollbar{width:5px;}
+.table-wrap::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.3);border-radius:4px;}
+.row{display:flex;align-items:center;background:var(--row-bg);border-radius:20px;padding:0 14px;height:36px;gap:10px;flex-shrink:0;animation:fadeIn 0.3s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.row__bar{flex:1;height:18px;background:var(--row-border);border-radius:10px;overflow:hidden;position:relative;}
+.row__fill{position:absolute;left:0;top:0;bottom:0;border-radius:10px;}
+.row__fill.pendente{background:#e8c97a;}
+.row__fill.confirmado{background:#85b89a;}
+.row__fill.concluido{background:#8fb3c8;}
+.row__fill.cancelado{background:#cc8888;}
+.row__text{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 20px);}
+.row__actions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.row__btn{background:none;border:none;cursor:pointer;padding:2px;color:var(--text-muted);display:flex;align-items:center;justify-content:center;}
+.row__btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.6;}
+.estado{text-align:center;padding:32px 0;color:rgba(255,255,255,0.6);font-size:13px;}
+.badge{display:inline-block;font-size:9px;letter-spacing:0.07em;padding:2px 7px;border-radius:10px;font-weight:600;text-transform:uppercase;margin-left:6px;}
+.badge.pendente{background:#f5e4a0;color:#7a6010;}
+.badge.confirmado{background:#b8dfc5;color:#1a5c35;}
+.badge.concluido{background:#b8d4e8;color:#1a3c5c;}
+.badge.cancelado{background:#e8b8b8;color:#6c1a1a;}
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.25);z-index:100;align-items:center;justify-content:center;}
+.modal-backdrop.open{display:flex;}
+.modal{background:#fff;border-radius:10px;padding:28px 28px 22px;width:340px;box-shadow:0 16px 48px rgba(0,0,0,0.18);}
+.modal__title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text-main);margin-bottom:20px;}
+.modal__field{margin-bottom:14px;}
+.modal__field label{display:block;font-size:10px;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:5px;}
+.modal__field input,.modal__field select{width:100%;height:34px;border:1px solid var(--grid-line);border-radius:6px;padding:0 10px;font-family:'Raleway',sans-serif;font-size:13px;color:var(--text-main);outline:none;}
+.modal__actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+.modal__btn{height:32px;padding:0 18px;border:none;border-radius:6px;font-family:'Raleway',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
+.modal__btn--cancel{background:var(--grid-line);color:var(--text-muted);}
+.modal__btn--save{background:var(--taupe);color:#fff;}
+.modal__btn:disabled{opacity:0.6;cursor:not-allowed;}
+.modal__erro{font-size:11px;color:#b04040;margin-top:8px;display:none;}
+.modal__erro.visivel{display:block;}
+</style>
 </head>
 <body>
 <div class="app">
-
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar__logo">F|</div>
     <nav class="sidebar__nav">
-      <div class="nav-item" title="Dashboard">
-        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      </div>
-      <div class="nav-item active" title="Agendamentos">
+      <a class="nav-item active" href="agendamentos.html" title="Agendamentos">
         <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="3" rx="1"/><rect x="3" y="10.5" width="18" height="3" rx="1"/><rect x="3" y="17" width="18" height="3" rx="1"/></svg>
-      </div>
+      </a>
+      <a class="nav-item" href="home.html" title="Site">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </a>
+      <a class="nav-item" href="#" title="Sair" onclick="sair()">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </a>
     </nav>
   </aside>
 
-  <!-- Main -->
   <div class="main">
     <header class="header">
       <span class="header__title">Agendamentos</span>
-      <div class="header__avatar">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <div class="header__right">
+        <span class="header__admin" id="nomeAdmin"></span>
+        <div class="header__avatar">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </div>
       </div>
     </header>
 
     <div class="content">
       <div class="card">
-
-        <!-- Toolbar -->
         <div class="toolbar">
           <div class="toolbar__group">
             <label>Nome</label>
-            <input type="text" id="filterNome" placeholder="" oninput="renderRows()"/>
+            <input type="text" id="filterNome" placeholder="" oninput="filtrarLocal()"/>
           </div>
           <div class="toolbar__group">
-            <label>Data</label>
-            <input type="date" id="filterData" oninput="renderRows()"/>
+            <label>Status</label>
+            <select id="filterStatus" onchange="carregarAgendamentos()">
+              <option value="">Todos</option>
+              <option value="pendente">Pendente</option>
+              <option value="confirmado">Confirmado</option>
+              <option value="concluido">Concluído</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
           </div>
-          <button class="btn-new" onclick="openModal()">Novo agendamento</button>
+          <button class="btn-new" onclick="openModal()">+ Novo horário</button>
         </div>
-
-        <!-- Rows -->
-        <div class="table-wrap" id="tableWrap"></div>
+        <div class="table-wrap" id="tableWrap">
+          <p class="estado">Carregando...</p>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal -->
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
-    <div class="modal__title" id="modalTitle">Novo agendamento</div>
+    <div class="modal__title">Criar horários disponíveis</div>
     <div class="modal__field">
-      <label>NOME</label>
-      <input type="text" id="mNome" placeholder="Nome do paciente"/>
+      <label>SERVIÇO</label>
+      <select id="mServico"></select>
     </div>
     <div class="modal__field">
       <label>DATA</label>
       <input type="date" id="mData"/>
     </div>
     <div class="modal__field">
-      <label>HORÁRIO</label>
-      <input type="time" id="mHora"/>
+      <label>HORÁRIOS (separados por vírgula)</label>
+      <input type="text" id="mSlots" placeholder="08:00, 09:00, 10:00"/>
     </div>
-    <div class="modal__field">
-      <label>PROCEDIMENTO</label>
-      <input type="text" id="mProc" placeholder="Ex: Consulta, Retorno…"/>
-    </div>
+    <p class="modal__erro" id="modalErro"></p>
     <div class="modal__actions">
       <button class="modal__btn modal__btn--cancel" onclick="closeModal()">Cancelar</button>
-      <button class="modal__btn modal__btn--save" onclick="saveModal()">Salvar</button>
+      <button class="modal__btn modal__btn--save" id="btnSalvar" onclick="salvarHorarios()">Criar</button>
     </div>
   </div>
 </div>
 
 <script>
-  // Sample data
-  let agendamentos = [
-    { id:1,  nome: 'Ana Paula Ferreira',       data: '2025-05-12', hora: '08:00', proc: 'Consulta' },
-    { id:2,  nome: 'Beatriz Souza Lima',        data: '2025-05-12', hora: '09:00', proc: 'Retorno' },
-    { id:3,  nome: 'Carlos Mendes',             data: '2025-05-13', hora: '09:30', proc: 'Exame' },
-    { id:4,  nome: 'Daniela Rocha',             data: '2025-05-13', hora: '10:00', proc: 'Consulta' },
-    { id:5,  nome: 'Eduardo Costa',             data: '2025-05-14', hora: '10:30', proc: 'Procedimento' },
-    { id:6,  nome: 'Fernanda Alves',            data: '2025-05-14', hora: '11:00', proc: 'Retorno' },
-    { id:7,  nome: 'Gabriela Nunes',            data: '2025-05-15', hora: '11:30', proc: 'Consulta' },
-    { id:8,  nome: 'Henrique Barbosa',          data: '2025-05-15', hora: '13:00', proc: 'Exame' },
-    { id:9,  nome: 'Isabela Martins',           data: '2025-05-16', hora: '13:30', proc: 'Consulta' },
-    { id:10, nome: 'João Pedro Oliveira',       data: '2025-05-16', hora: '14:00', proc: 'Procedimento' },
-    { id:11, nome: 'Larissa Campos',            data: '2025-05-17', hora: '14:30', proc: 'Retorno' },
-    { id:12, nome: 'Marcelo Teixeira',          data: '2025-05-17', hora: '15:00', proc: 'Consulta' },
-    { id:13, nome: 'Natalia Freitas',           data: '2025-05-19', hora: '15:30', proc: 'Exame' },
-    { id:14, nome: 'Otávio Cardoso',            data: '2025-05-19', hora: '16:00', proc: 'Consulta' },
-    { id:15, nome: 'Patrícia Gomes',            data: '2025-05-20', hora: '16:30', proc: 'Retorno' },
-  ];
+const API_URL = "http://localhost:3000/api";
 
-  let editingId = null;
-  let nextId = 16;
+if (!localStorage.getItem("token_admin")) window.location.href = "login.html";
+document.getElementById("nomeAdmin").textContent = localStorage.getItem("admin_nome") || "";
 
-  function fmt(dateStr) {
-    if (!dateStr) return '';
-    const [y,m,d] = dateStr.split('-');
-    return `${d}/${m}/${y}`;
-  }
+let todosAgendamentos = [];
 
-  function renderRows() {
-    const wrap = document.getElementById('tableWrap');
-    const fNome = document.getElementById('filterNome').value.toLowerCase();
-    const fData = document.getElementById('filterData').value;
+async function apiFetch(path, options = {}) {
+  const token = localStorage.getItem("token_admin");
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const res  = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.erro || "Erro");
+  return data;
+}
 
-    const filtered = agendamentos.filter(a => {
-      const matchNome = a.nome.toLowerCase().includes(fNome);
-      const matchData = fData ? a.data === fData : true;
-      return matchNome && matchData;
-    });
+function fmt(dateStr) {
+  if (!dateStr) return "";
+  return new Date(dateStr).toLocaleDateString("pt-BR");
+}
 
-    wrap.innerHTML = '';
-    filtered.forEach((a, i) => {
-      const row = document.createElement('div');
-      row.className = 'row';
-      row.style.animationDelay = `${i * 30}ms`;
-      row.innerHTML = `
-        <div class="row__bar">
-          <div class="row__fill" style="width:${55 + Math.random()*40}%"></div>
-          <span class="row__text">${a.nome} &nbsp;·&nbsp; ${fmt(a.data)} &nbsp;·&nbsp; ${a.hora} &nbsp;·&nbsp; ${a.proc}</span>
-        </div>
-        <div class="row__actions">
-          <button class="row__btn edit" title="Editar" onclick="editRow(${a.id})">
-            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          </button>
-          <button class="row__btn del" title="Excluir" onclick="deleteRow(${a.id})">
-            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-          </button>
-        </div>`;
-      wrap.appendChild(row);
-    });
-  }
+function filtrarLocal() {
+  const f = document.getElementById("filterNome").value.toLowerCase();
+  renderRows(todosAgendamentos.filter(a => a.paciente_nome.toLowerCase().includes(f)));
+}
 
-  function deleteRow(id) {
-    agendamentos = agendamentos.filter(a => a.id !== id);
-    renderRows();
-  }
-
-  function editRow(id) {
-    const a = agendamentos.find(x => x.id === id);
-    if (!a) return;
-    editingId = id;
-    document.getElementById('modalTitle').textContent = 'Editar agendamento';
-    document.getElementById('mNome').value = a.nome;
-    document.getElementById('mData').value = a.data;
-    document.getElementById('mHora').value = a.hora;
-    document.getElementById('mProc').value = a.proc;
-    document.getElementById('modalBackdrop').classList.add('open');
-  }
-
-  function openModal() {
-    editingId = null;
-    document.getElementById('modalTitle').textContent = 'Novo agendamento';
-    document.getElementById('mNome').value = '';
-    document.getElementById('mData').value = '';
-    document.getElementById('mHora').value = '';
-    document.getElementById('mProc').value = '';
-    document.getElementById('modalBackdrop').classList.add('open');
-  }
-
-  function closeModal() {
-    document.getElementById('modalBackdrop').classList.remove('open');
-  }
-
-  function saveModal() {
-    const nome = document.getElementById('mNome').value.trim();
-    const data = document.getElementById('mData').value;
-    const hora = document.getElementById('mHora').value;
-    const proc = document.getElementById('mProc').value.trim();
-    if (!nome) { document.getElementById('mNome').focus(); return; }
-
-    if (editingId) {
-      const a = agendamentos.find(x => x.id === editingId);
-      if (a) { a.nome = nome; a.data = data; a.hora = hora; a.proc = proc; }
-    } else {
-      agendamentos.push({ id: nextId++, nome, data, hora, proc });
-    }
-    closeModal();
-    renderRows();
-  }
-
-  document.getElementById('modalBackdrop').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
+function renderRows(lista) {
+  const wrap = document.getElementById("tableWrap");
+  if (!lista.length) { wrap.innerHTML = '<p class="estado">Nenhum agendamento encontrado.</p>'; return; }
+  wrap.innerHTML = "";
+  lista.forEach((a, i) => {
+    const horario = a.horario_id || {};
+    const servico = horario.servico_id || {};
+    const status  = a.status || "pendente";
+    const fill    = { pendente:55, confirmado:75, concluido:95, cancelado:40 }[status] || 55;
+    const row = document.createElement("div");
+    row.className = "row";
+    row.style.animationDelay = `${i*25}ms`;
+    row.innerHTML = `
+      <div class="row__bar">
+        <div class="row__fill ${status}" style="width:${fill}%"></div>
+        <span class="row__text">${a.paciente_nome} · ${fmt(horario.data)} ${horario.hora_inicio||""} · ${servico.nome||"—"} <span class="badge ${status}">${status}</span></span>
+      </div>
+      <div class="row__actions">
+        ${status==="pendente"?`<button class="row__btn" title="Confirmar" onclick="mudarStatus('${a._id}','confirmado')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>`:""}
+        ${["pendente","confirmado"].includes(status)?`<button class="row__btn" title="Cancelar" onclick="mudarStatus('${a._id}','cancelado')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`:""}
+      </div>`;
+    wrap.appendChild(row);
   });
+}
 
-  renderRows();
+async function carregarAgendamentos() {
+  const status = document.getElementById("filterStatus").value;
+  document.getElementById("tableWrap").innerHTML = '<p class="estado">Carregando...</p>';
+  try {
+    todosAgendamentos = await apiFetch(`/admin/agendamentos${status?`?status=${status}`:""}`);
+    filtrarLocal();
+  } catch (err) {
+    if (err.message.includes("Token")) sair();
+    else document.getElementById("tableWrap").innerHTML = '<p class="estado">Erro ao carregar. Servidor está rodando?</p>';
+  }
+}
+
+async function mudarStatus(id, status) {
+  try {
+    await apiFetch(`/admin/agendamentos/${id}`, { method: "PATCH", body: JSON.stringify({ status }) });
+    await carregarAgendamentos();
+  } catch (err) { alert("Erro: " + err.message); }
+}
+
+async function openModal() {
+  document.getElementById("modalBackdrop").classList.add("open");
+  try {
+    const servicos = await apiFetch("/servicos");
+    document.getElementById("mServico").innerHTML = servicos.map(s => `<option value="${s._id}" data-dur="${s.duracao_min}">${s.nome}</option>`).join("");
+  } catch {}
+}
+
+function closeModal() {
+  document.getElementById("modalBackdrop").classList.remove("open");
+  document.getElementById("modalErro").classList.remove("visivel");
+}
+
+async function salvarHorarios() {
+  const el  = document.getElementById("mServico");
+  const sid = el.value;
+  const dur = parseInt(el.selectedOptions[0]?.dataset.dur || 60);
+  const data = document.getElementById("mData").value;
+  const slots = document.getElementById("mSlots").value.split(",").map(s=>s.trim()).filter(Boolean);
+  const erro  = document.getElementById("modalErro");
+  const btn   = document.getElementById("btnSalvar");
+  if (!data || !slots.length) { erro.textContent="Preencha data e horários."; erro.classList.add("visivel"); return; }
+  btn.disabled = true; btn.textContent = "Criando...";
+  try {
+    const r = await apiFetch("/admin/horarios", { method:"POST", body: JSON.stringify({ servico_id:sid, data, slots, duracao_min:dur }) });
+    alert(r.mensagem); closeModal();
+  } catch (err) { erro.textContent = err.message; erro.classList.add("visivel"); }
+  finally { btn.disabled=false; btn.textContent="Criar"; }
+}
+
+function sair() {
+  localStorage.removeItem("token_admin");
+  localStorage.removeItem("admin_nome");
+  window.location.href = "login.html";
+}
+
+document.getElementById("modalBackdrop").addEventListener("click", function(e) { if(e.target===this) closeModal(); });
+carregarAgendamentos();
 </script>
 </body>
 </html>
