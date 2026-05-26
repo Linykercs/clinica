@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api";
+const API_URL = "https://clinica-production-2032.up.railway.app/api";
 
 async function req(path, options = {}) {
   const token = localStorage.getItem("token_admin");
