@@ -5,7 +5,16 @@ require("dotenv").config();
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : ["http://localhost:5500", "http://127.0.0.1:5500"];
+
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    cb(new Error("Origem não permitida pelo CORS"));
+  },
+}));
 app.use(express.json());
 
 app.use("/api/servicos",     require("./routes/servicos"));

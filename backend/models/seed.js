@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const bcrypt   = require("bcryptjs");
-
-const MONGO_URI = "mongodb://127.0.0.1:27017/clinica_regenerativa";
+require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
 
 async function seed() {
-  await mongoose.connect(MONGO_URI);
+  const uri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/clinica_regenerativa";
+  await mongoose.connect(uri);
   console.log("✅ MongoDB conectado");
 
   const Administrador     = require("./01_administradores");

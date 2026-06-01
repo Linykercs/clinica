@@ -11,22 +11,26 @@ router.post("/", async (req, res) => {
     if (!horario_id || !paciente_nome || !paciente_email || !paciente_telefone) {
       return res.status(400).json({ erro: "Preencha todos os campos obrigatórios." });
     }
-    const horario = await HorarioDisponivel.findById(horario_id);
-    if (!horario) return res.status(404).json({ erro: "Horário não encontrado." });
-    if (horario.ocupado) return res.status(409).json({ erro: "Horário já ocupado." });
+    const horario = await HorarioDisponivel.findOneAndUpdate(
+      { _id: horario_id, ocupado: false },
+      { ocupado: true },
+      { new: true }
+    );
+    if (!horario) return res.status(409).json({ erro: "Horário não disponível ou já ocupado." });
 
     const agora    = new Date();
     const dataHora = new Date(horario.data);
     const [h, m]   = horario.hora_inicio.split(":").map(Number);
     dataHora.setHours(h, m, 0, 0);
     if ((dataHora - agora) / 3600000 < 24) {
+      await HorarioDisponivel.findByIdAndUpdate(horario_id, { ocupado: false });
       return res.status(400).json({ erro: "Agendamento com mínimo 24h de antecedência." });
     }
 
     const agendamento = await Agendamento.create({ horario_id, paciente_nome, paciente_email, paciente_telefone, observacoes, origem: "site" });
-    await HorarioDisponivel.findByIdAndUpdate(horario_id, { ocupado: true });
     res.status(201).json({ mensagem: "Consulta agendada com sucesso!", agendamento });
   } catch (err) {
+    console.error("[agendamentos] POST /", err);
     res.status(500).json({ erro: "Erro ao criar agendamento." });
   }
 });

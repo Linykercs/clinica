@@ -22,6 +22,7 @@ router.get("/", async (req, res) => {
 
     res.json(horarios);
   } catch (err) {
+    console.error("[horarios] GET /", err);
     res.status(500).json({ erro: "Erro ao buscar horários." });
   }
 });
