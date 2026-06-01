@@ -100,6 +100,7 @@ async function apiFetch(path, options={}) {
 }
 
 function fmt(d) { return d ? new Date(d).toLocaleDateString("pt-BR") : ""; }
+function esc(str) { const d = document.createElement("div"); d.textContent = str||""; return d.innerHTML; }
 
 function filtrarLocal() {
   const f = document.getElementById("filterNome").value.toLowerCase();
@@ -119,11 +120,11 @@ function renderRows(lista) {
     row.innerHTML=`
       <div class="admin-row__bar">
         <div class="admin-row__fill ${status}" style="width:${fill}%"></div>
-        <span class="admin-row__text">${a.paciente_nome} · ${fmt(h.data)} ${h.hora_inicio||""} · ${s.nome||"—"} <span class="admin-badge ${status}">${status}</span></span>
+        <span class="admin-row__text">${esc(a.paciente_nome)} · ${esc(fmt(h.data))} ${esc(h.hora_inicio||"")} · ${esc(s.nome||"—")} <span class="admin-badge ${status}">${esc(status)}</span></span>
       </div>
       <div class="admin-row__actions">
-        ${status==="pendente"?`<button class="admin-row__btn" onclick="mudarStatus('${a._id}','confirmado')" title="Confirmar"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>`:""}
-        ${["pendente","confirmado"].includes(status)?`<button class="admin-row__btn danger" onclick="mudarStatus('${a._id}','cancelado')" title="Cancelar"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`:""}
+        ${status==="pendente"?`<button class="admin-row__btn" onclick="mudarStatus('${esc(a._id)}','confirmado')" title="Confirmar"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>`:""}
+        ${["pendente","confirmado"].includes(status)?`<button class="admin-row__btn danger" onclick="mudarStatus('${esc(a._id)}','cancelado')" title="Cancelar"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`:""}
       </div>`;
     wrap.appendChild(row);
   });

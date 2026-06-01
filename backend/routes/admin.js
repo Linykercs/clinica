@@ -85,6 +85,9 @@ router.post("/horarios", auth, async (req, res) => {
     if (!servico_id || !data || !slots || !duracao_min) {
       return res.status(400).json({ erro: "Informe todos os campos." });
     }
+    if (new Date(data) < new Date().setHours(0,0,0,0)) {
+      return res.status(400).json({ erro: "Não é possível criar horários em datas passadas." });
+    }
     const horarios = slots.map((slot) => {
       const [h, m]   = slot.split(":").map(Number);
       const total    = h * 60 + m + duracao_min;

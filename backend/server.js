@@ -31,7 +31,7 @@ mongoose
   .then(() => {
     console.log("✅ MongoDB conectado");
     app.listen(process.env.PORT || 3000, () =>
-      console.log("🚀 Servidor rodando em http://localhost:3000")
+      console.log(`🚀 Servidor rodando na porta ${process.env.PORT || 3000}`)
     );
   })
   .catch((err) => {

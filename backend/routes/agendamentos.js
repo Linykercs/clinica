@@ -1,15 +1,18 @@
-const express                = require("express");
-const router                 = express.Router();
-const Agendamento            = require("../models/04_agendamentos");
-const HorarioDisponivel      = require("../models/03_horarios_disponiveis");
-const HistoricoReagendamento = require("../models/05_historico_reagendamentos");
-const FilaEspera             = require("../models/06_fila_espera");
+const express           = require("express");
+const router            = express.Router();
+const Agendamento       = require("../models/04_agendamentos");
+const HorarioDisponivel = require("../models/03_horarios_disponiveis");
+const FilaEspera        = require("../models/06_fila_espera");
+const auth              = require("../middleware/auth");
 
 router.post("/", async (req, res) => {
   try {
     const { horario_id, paciente_nome, paciente_email, paciente_telefone, observacoes } = req.body;
     if (!horario_id || !paciente_nome || !paciente_email || !paciente_telefone) {
       return res.status(400).json({ erro: "Preencha todos os campos obrigatórios." });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(paciente_email)) {
+      return res.status(400).json({ erro: "Informe um e-mail válido." });
     }
     const horario = await HorarioDisponivel.findOneAndUpdate(
       { _id: horario_id, ocupado: false },
@@ -35,7 +38,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.post("/:id/cancelar", async (req, res) => {
+router.post("/:id/cancelar", auth, async (req, res) => {
   try {
     const agendamento = await Agendamento.findById(req.params.id);
     if (!agendamento) return res.status(404).json({ erro: "Não encontrado." });
@@ -48,6 +51,7 @@ router.post("/:id/cancelar", async (req, res) => {
     }
     res.json({ mensagem: "Cancelado com sucesso." });
   } catch (err) {
+    console.error("[agendamentos] POST /:id/cancelar", err);
     res.status(500).json({ erro: "Erro ao cancelar." });
   }
 });
@@ -64,6 +68,7 @@ router.post("/:id/fila", async (req, res) => {
     const entrada = await FilaEspera.create({ horario_id, paciente_nome, paciente_email, paciente_telefone, posicao });
     res.status(201).json({ mensagem: `Você está na posição ${posicao} da fila.`, entrada });
   } catch (err) {
+    console.error("[agendamentos] POST /:id/fila", err);
     res.status(500).json({ erro: "Erro ao entrar na fila." });
   }
 });

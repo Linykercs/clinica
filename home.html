@@ -148,25 +148,32 @@ function toggleChat() {
   if (box.style.display !== "none") document.getElementById("chatbotInput").focus();
 }
 
+function addMsg(texto, tipo) {
+  const msgs = document.getElementById("chatbotMsgs");
+  const div = document.createElement("div");
+  div.className = `chatbot-msg ${tipo}`;
+  div.textContent = texto;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
 async function enviarMsg() {
   const input = document.getElementById("chatbotInput");
   const pergunta = input.value.trim();
   if (!pergunta) return;
   input.value = "";
 
-  const msgs = document.getElementById("chatbotMsgs");
-  msgs.innerHTML += `<div class="chatbot-msg user">${pergunta}</div>`;
-  msgs.innerHTML += `<div class="chatbot-msg bot" id="typing">...</div>`;
-  msgs.scrollTop = msgs.scrollHeight;
+  addMsg(pergunta, "user");
+  const typing = addMsg("...", "bot");
 
   try {
     const res  = await fetch(`${CHAT_API}/chatbot?pergunta=${encodeURIComponent(pergunta)}`);
     const data = await res.json();
-    document.getElementById("typing").textContent = data.resposta || "Não entendi. Tente perguntar de outra forma.";
+    typing.textContent = data.resposta || "Não entendi. Tente perguntar de outra forma.";
   } catch {
-    document.getElementById("typing").textContent = "Erro ao conectar. Tente novamente.";
+    typing.textContent = "Erro ao conectar. Tente novamente.";
   }
-  msgs.scrollTop = msgs.scrollHeight;
 }
 </script>
 
