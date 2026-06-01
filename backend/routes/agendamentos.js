@@ -22,9 +22,9 @@ router.post("/", async (req, res) => {
     const dataHora = new Date(horario.data);
     const [h, m]   = horario.hora_inicio.split(":").map(Number);
     dataHora.setHours(h, m, 0, 0);
-    if ((dataHora - agora) / 3600000 < 24) {
+    if ((dataHora - agora) / 3600000 < 2) {
       await HorarioDisponivel.findByIdAndUpdate(horario_id, { ocupado: false });
-      return res.status(400).json({ erro: "Agendamento com mínimo 24h de antecedência." });
+      return res.status(400).json({ erro: "Agendamento com mínimo 2h de antecedência." });
     }
 
     const agendamento = await Agendamento.create({ horario_id, paciente_nome, paciente_email, paciente_telefone, observacoes, origem: "site" });
