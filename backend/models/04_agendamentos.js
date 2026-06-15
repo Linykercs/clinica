@@ -1,3 +1,23 @@
+/**
+ * models/04_agendamentos.js — Agendamentos de pacientes.
+ *
+ * Ciclo de vida do status:
+ *   pendente → confirmado → concluido
+ *            ↘ cancelado  (em qualquer etapa)
+ *
+ * Campos:
+ *   horario_id          - Referência ao slot reservado (HorarioDisponivel)
+ *   paciente_nome       - Nome completo do paciente
+ *   paciente_email      - E-mail para comunicação (lowercase)
+ *   paciente_telefone   - Telefone/WhatsApp
+ *   status              - pendente | confirmado | concluido | cancelado
+ *   reagendamentos_count- Contador de reagendamentos (máx 2 por regra de negócio)
+ *   origem              - "site" (paciente) ou "admin" (criado pelo painel)
+ *   observacoes         - Informações adicionais do paciente (opcional)
+ *
+ * Timestamps: criado_em, atualizado_em
+ */
+
 const mongoose = require("mongoose");
 
 const agendamentoSchema = new mongoose.Schema({

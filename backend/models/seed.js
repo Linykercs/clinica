@@ -1,3 +1,19 @@
+/**
+ * models/seed.js — Script de população inicial do banco de dados.
+ *
+ * Uso: node backend/models/seed.js
+ *
+ * ATENÇÃO: apaga e recria os dados de Administrador, Servico,
+ * HorarioDisponivel e ChatbotFaq. Não afeta Agendamentos nem Contatos.
+ * Use apenas em ambiente de desenvolvimento ou na primeira configuração.
+ *
+ * Cria:
+ *   - 1 admin: admin@clinica.com / admin123
+ *   - 4 serviços pré-configurados
+ *   - Slots de horário para os próximos 5 dias úteis (08h–16h)
+ *   - 5 FAQs iniciais para o chatbot
+ */
+
 const mongoose = require("mongoose");
 const bcrypt   = require("bcryptjs");
 require("dotenv").config({ path: require("path").join(__dirname, "../.env") });

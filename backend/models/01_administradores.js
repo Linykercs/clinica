@@ -1,3 +1,16 @@
+/**
+ * models/01_administradores.js — Administradores do painel.
+ *
+ * Campos:
+ *   nome          - Nome de exibição no painel
+ *   email         - Identificador único de login (lowercase)
+ *   senha_hash    - Hash bcrypt — nunca armazenar senha em texto puro
+ *   ativo         - false desativa o acesso sem excluir o registro (auditoria segura)
+ *   ultimo_acesso - Atualizado a cada login bem-sucedido
+ *
+ * Timestamps: criado_em, atualizado_em
+ */
+
 const mongoose = require("mongoose");
 
 const administradorSchema = new mongoose.Schema(

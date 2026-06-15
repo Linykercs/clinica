@@ -1,6 +1,17 @@
+/**
+ * routes/horarios.js — Rota pública de horários disponíveis.
+ *
+ * GET /api/horarios?data=YYYY-MM-DD&servico=<ObjectId>
+ *   Retorna slots do dia que ainda não estão ocupados, ordenados por hora_inicio.
+ *   Ambos os parâmetros são obrigatórios.
+ *
+ * Resposta: Array<{ _id, servico_id, data, hora_inicio, hora_fim, ocupado }>
+ */
+
 const router            = require("express").Router();
 const HorarioDisponivel = require("../models/03_horarios_disponiveis");
 
+// Consulta de horários livres para uma data+serviço específicos
 router.get("/", async (req, res) => {
   try {
     const { data, servico } = req.query;
@@ -9,6 +20,7 @@ router.get("/", async (req, res) => {
       return res.status(400).json({ erro: "Informe 'data' e 'servico' na query." });
     }
 
+    // Delimita a busca ao dia inteiro para evitar fuso-horário cruzando datas
     const inicio = new Date(data);
     inicio.setHours(0, 0, 0, 0);
     const fim = new Date(data);
