@@ -1,5 +1,5 @@
 [build]
-  publish = "."
+  publish = "frontend"
   ignore = "backend"
 
 [[headers]]
