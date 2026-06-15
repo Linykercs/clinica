@@ -8,9 +8,10 @@
 <link rel="stylesheet" href="style/agendamentos.css"/>
 </head>
 <body>
+<!-- Pagina de gerenciamento de agendamentos (painel admin) -->
 <div class="admin-app">
 
-  <!-- Sidebar -->
+  <!-- Sidebar de navegacao do painel -->
   <aside class="admin-sidebar">
     <div class="admin-sidebar__logo">F|</div>
     <nav class="admin-sidebar__nav">
@@ -29,7 +30,7 @@
     </nav>
   </aside>
 
-  <!-- Main -->
+  <!-- Conteudo principal -->
   <div class="admin-main">
     <header class="admin-header">
       <span class="admin-header__title">Agendamentos</span>
@@ -58,6 +59,7 @@
               <option value="cancelado">Cancelado</option>
             </select>
           </div>
+          <!-- Botao para abrir modal de criar horarios -->
           <button class="admin-btn-new" onclick="openModal()">+ Novo horário</button>
         </div>
         <div class="admin-table-wrap" id="tableWrap">
@@ -68,7 +70,7 @@
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal para cadastrar horarios disponiveis -->
 <div class="admin-modal-backdrop" id="modalBackdrop">
   <div class="admin-modal">
     <div class="admin-modal__title">Criar horários disponíveis</div>
@@ -85,10 +87,12 @@
 
 <script>
 const API_URL = "https://clinica-production-3c98.up.railway.app/api";
+// Redirecionar para login se nao estiver autenticado
 if (!localStorage.getItem("token_admin")) window.location.href = "login.html";
 document.getElementById("nomeAdmin").textContent = localStorage.getItem("admin_nome") || "";
 let todosAgendamentos = [];
 
+// Funcao base de requisicao autenticada
 async function apiFetch(path, options={}) {
   const token = localStorage.getItem("token_admin");
   const headers = {"Content-Type":"application/json"};
@@ -102,11 +106,13 @@ async function apiFetch(path, options={}) {
 function fmt(d) { return d ? new Date(d).toLocaleDateString("pt-BR") : ""; }
 function esc(str) { const d = document.createElement("div"); d.textContent = str||""; return d.innerHTML; }
 
+// Filtrar agendamentos por nome (local, sem nova requisicao)
 function filtrarLocal() {
   const f = document.getElementById("filterNome").value.toLowerCase();
   renderRows(todosAgendamentos.filter(a => a.paciente_nome.toLowerCase().includes(f)));
 }
 
+// Renderizar linhas da tabela de agendamentos
 function renderRows(lista) {
   const wrap = document.getElementById("tableWrap");
   if (!lista.length) { wrap.innerHTML='<p class="admin-estado">Nenhum agendamento encontrado.</p>'; return; }
@@ -130,6 +136,7 @@ function renderRows(lista) {
   });
 }
 
+// Carregar lista de agendamentos da API
 async function carregarAgendamentos() {
   const status = document.getElementById("filterStatus").value;
   document.getElementById("tableWrap").innerHTML='<p class="admin-estado">Carregando...</p>';
@@ -142,11 +149,13 @@ async function carregarAgendamentos() {
   }
 }
 
+// Mudar status do agendamento (confirmar ou cancelar)
 async function mudarStatus(id,status) {
   try { await apiFetch(`/admin/agendamentos/${id}`,{method:"PATCH",body:JSON.stringify({status})}); await carregarAgendamentos(); }
   catch(err) { alert("Erro: "+err.message); }
 }
 
+// Abrir modal de cadastrar horarios
 async function openModal() {
   document.getElementById("modalBackdrop").classList.add("open");
   try {
@@ -155,8 +164,10 @@ async function openModal() {
   } catch{}
 }
 
+// Fechar modal de horarios
 function closeModal() { document.getElementById("modalBackdrop").classList.remove("open"); }
 
+// Salvar horarios disponiveis na API
 async function salvarHorarios() {
   const el=document.getElementById("mServico"), sid=el.value, dur=parseInt(el.selectedOptions[0]?.dataset.dur||60);
   const data=document.getElementById("mData").value;
@@ -169,7 +180,9 @@ async function salvarHorarios() {
   finally{btn.disabled=false;btn.textContent="Criar";}
 }
 
+// Sair do painel (logout)
 function sair() { localStorage.removeItem("token_admin"); localStorage.removeItem("admin_nome"); window.location.href="login.html"; }
+// Fechar modal ao clicar fora
 document.getElementById("modalBackdrop").addEventListener("click",function(e){if(e.target===this)closeModal();});
 carregarAgendamentos();
 </script>

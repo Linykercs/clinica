@@ -8,6 +8,9 @@
 <link rel="stylesheet" href="style/home.css"/>
 </head>
 <body>
+<!-- Pagina inicial do site -->
+
+<!-- Navbar principal com menu mobile -->
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="home.html" class="nav-logo"><img src="img/logo.svg" alt="Flávia Franco"/></a>
@@ -26,6 +29,7 @@
   </div>
 </nav>
 
+<!-- Secao hero com apresentacao da clinica e botoes de CTA -->
 <section class="hero">
   <div class="hero-container">
     <div class="hero-text">
@@ -57,6 +61,7 @@
   </div>
 </section>
 
+<!-- Secao de estatisticas da clinica -->
 <section class="stats">
   <div class="container">
     <div class="stats-grid">
@@ -66,6 +71,7 @@
   </div>
 </section>
 
+<!-- Banner CTA com link para pagina de servicos -->
 <section class="cta-banner">
   <div class="cta-overlay">
     <div class="cta-decorativo"><div class="deco-rect deco-rect-1"></div><div class="deco-rect deco-rect-2"></div></div>
@@ -77,6 +83,7 @@
   </div>
 </section>
 
+<!-- Footer com informacoes de contato e horarios de funcionamento -->
 <footer class="footer">
   <div class="footer-container">
     <div class="footer-left">
@@ -104,7 +111,7 @@
     <p>Todos Os Direitos Reservados © FLÁVIA FRANCO 2026.</p>
   </div>
 </footer>
-<!-- Chatbot -->
+<!-- Widget do chatbot flutuante -->
 <div class="chatbot-widget">
   <div class="chatbot-box" id="chatbotBox" style="display:none">
     <div class="chatbot-header">
@@ -141,6 +148,7 @@
 <script>
 const CHAT_API = "https://clinica-production-3c98.up.railway.app/api";
 
+// Abrir e fechar janela do chatbot
 function toggleChat() {
   const box = document.getElementById("chatbotBox");
   box.style.display = box.style.display === "none" ? "flex" : "none";
@@ -148,6 +156,7 @@ function toggleChat() {
   if (box.style.display !== "none") document.getElementById("chatbotInput").focus();
 }
 
+// Adicionar mensagem na janela do chatbot
 function addMsg(texto, tipo) {
   const msgs = document.getElementById("chatbotMsgs");
   const div = document.createElement("div");
@@ -158,6 +167,7 @@ function addMsg(texto, tipo) {
   return div;
 }
 
+// Enviar mensagem ao chatbot e exibir resposta
 async function enviarMsg() {
   const input = document.getElementById("chatbotInput");
   const pergunta = input.value.trim();

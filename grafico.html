@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="style/agendamentos.css"/>
 </head>
 <body>
+<!-- Dashboard do painel admin com graficos e contadores -->
 <div class="admin-app">
   <aside class="admin-sidebar">
     <div class="admin-sidebar__logo">F|</div>
@@ -39,7 +40,7 @@
     </header>
 
     <div class="admin-content">
-      <!-- Cards resumo -->
+      <!-- Cards de resumo com totais de agendamentos -->
       <div class="dash-cards" id="dashCards">
         <div class="dash-card"><div class="dash-card__num" id="dTotal">—</div><div class="dash-card__label">Total Agendamentos</div></div>
         <div class="dash-card dash-card--yellow"><div class="dash-card__num" id="dPendentes">—</div><div class="dash-card__label">Pendentes</div></div>
@@ -47,7 +48,7 @@
         <div class="dash-card dash-card--blue"><div class="dash-card__num" id="dHoje">—</div><div class="dash-card__label">Agendados Hoje</div></div>
       </div>
 
-      <!-- Gráfico de barras -->
+      <!-- Grafico de barras de agendamentos por status -->
       <div class="admin-card" style="margin-top:20px; padding:28px;">
         <h3 style="font-family:var(--serif,serif);font-size:18px;font-weight:400;margin-bottom:24px;color:#3a3028">Agendamentos por status</h3>
         <canvas id="graficoBar" height="120"></canvas>
@@ -59,9 +60,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 const API_URL = "https://clinica-production-3c98.up.railway.app/api";
+// Redirecionar para login se nao estiver autenticado
 if (!localStorage.getItem("token_admin")) window.location.href = "login.html";
 document.getElementById("nomeAdmin").textContent = localStorage.getItem("admin_nome")||"";
 
+// Funcao base de requisicao autenticada
 async function apiFetch(path) {
   const token = localStorage.getItem("token_admin");
   const res = await fetch(`${API_URL}${path}`, {headers:{"Authorization":`Bearer ${token}`}});
@@ -70,6 +73,7 @@ async function apiFetch(path) {
   return data;
 }
 
+// Carregar dados do dashboard e renderizar grafico
 async function carregarDashboard() {
   try {
     const d = await apiFetch("/admin/dashboard");
@@ -98,6 +102,7 @@ async function carregarDashboard() {
   }
 }
 
+// Sair do painel (logout)
 function sair() { localStorage.removeItem("token_admin"); localStorage.removeItem("admin_nome"); window.location.href="login.html"; }
 carregarDashboard();
 </script>

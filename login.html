@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="style/login.css"/>
 </head>
 <body>
+<!-- Pagina de login do painel admin -->
 <div class="login-page">
   <div class="blob blob--tl"></div>
   <div class="blob blob--bl"></div>
@@ -16,6 +17,7 @@
     <div class="login-brand__name">Flávia Franco</div>
     <div class="login-brand__sub">Saúde Regenerativa</div>
   </div>
+  <!-- Formulario de login -->
   <div class="login-card">
     <h1 class="login-card__title">Acessar conta</h1>
     <div class="login-field">
@@ -35,7 +37,10 @@
 </div>
 <script>
 const API_URL = "https://clinica-production-3c98.up.railway.app/api";
+// Redirecionar para o painel se ja estiver logado
 if (localStorage.getItem("token_admin")) window.location.href = "agendamentos.html";
+
+// Fazer login admin
 async function fazerLogin() {
   const email = document.getElementById("usuario").value.trim();
   const senha = document.getElementById("senha").value;
@@ -55,6 +60,7 @@ async function fazerLogin() {
     btn.disabled=false; btn.textContent="Entrar";
   }
 }
+// Enviar login ao pressionar Enter
 document.addEventListener("keydown", e => { if(e.key==="Enter") fazerLogin(); });
 </script>
 </body>

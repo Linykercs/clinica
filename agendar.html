@@ -246,8 +246,10 @@ html, body { min-height: 100%; font-family: 'Raleway', sans-serif; background: v
 </div>
 
 <script>
+// Pagina de agendamento de consulta - fluxo em 4 etapas
 const API_URL = "https://clinica-production-3c98.up.railway.app/api";
 
+// Estado global do fluxo de agendamento
 let estado = {
   etapa: 1,
   servico: null,
@@ -256,6 +258,7 @@ let estado = {
   nome: "", email: "", telefone: "", obs: ""
 };
 
+// Buscar dados da API (publico)
 async function get(path) {
   const res  = await fetch(`${API_URL}${path}`);
   const data = await res.json();
@@ -263,6 +266,7 @@ async function get(path) {
   return data;
 }
 
+// Enviar dados para a API (publico)
 async function post(path, body) {
   const res  = await fetch(`${API_URL}${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
   const data = await res.json();
@@ -270,6 +274,7 @@ async function post(path, body) {
   return data;
 }
 
+// Atualizar indicador visual de etapas (steps)
 function atualizarSteps() {
   for (let i = 1; i <= 4; i++) {
     const el = document.getElementById(`step${i}`);
@@ -277,6 +282,7 @@ function atualizarSteps() {
   }
 }
 
+// Renderizar o card da etapa atual
 function renderEtapa() {
   atualizarSteps();
   const card = document.getElementById("cardContent");
@@ -290,6 +296,7 @@ function renderEtapa() {
   else if (estado.etapa === 4) renderConfirmacao(card);
 }
 
+// Etapa 1: selecionar servico
 async function renderServicos(card) {
   card.innerHTML = `<div class="loading"><div class="spinner"></div>Carregando serviços...</div>`;
   try {
@@ -327,6 +334,7 @@ function irParaEtapa2() {
   renderEtapa();
 }
 
+// Etapa 2: selecionar data e horario
 function renderDataHora(card) {
   const hoje = new Date();
   hoje.setDate(hoje.getDate() + 1);
@@ -356,6 +364,7 @@ function renderDataHora(card) {
   if (estado.data) carregarHorarios(estado.data);
 }
 
+// Carregar horarios disponiveis para a data selecionada
 async function carregarHorarios(data) {
   const container = document.getElementById("horariosContainer");
   container.innerHTML = `<div class="loading"><div class="spinner"></div>Buscando horários...</div>`;
@@ -393,6 +402,7 @@ function irParaEtapa3() {
   renderEtapa();
 }
 
+// Etapa 3: preencher dados do paciente
 function renderDados(card) {
   card.innerHTML = `
     <h2 class="section__title">Seus dados</h2>
@@ -444,6 +454,7 @@ function irParaEtapa4() {
   renderEtapa();
 }
 
+// Etapa 4: tela de confirmacao do agendamento
 function renderConfirmacao(card) {
   const dataFmt = new Date(estado.data + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
@@ -466,6 +477,7 @@ function renderConfirmacao(card) {
     </div>`;
 }
 
+// Confirmar agendamento e enviar para a API
 async function confirmarAgendamento() {
   const btn  = document.getElementById("btnConfirmar");
   const erro = document.getElementById("erroConfirm");
@@ -489,6 +501,7 @@ async function confirmarAgendamento() {
   }
 }
 
+// Exibir tela de sucesso apos agendamento confirmado
 function mostrarSucesso() {
   const dataFmt = new Date(estado.data + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
   document.getElementById("steps").style.display = "none";
@@ -510,12 +523,14 @@ function mostrarSucesso() {
     </div>`;
 }
 
+// Reiniciar fluxo para novo agendamento
 function novoAgendamento() {
   estado = { etapa: 1, servico: null, data: null, horario: null, nome: "", email: "", telefone: "", obs: "" };
   document.getElementById("steps").style.display = "flex";
   renderEtapa();
 }
 
+// Voltar para a etapa anterior
 function voltarEtapa() {
   estado.etapa--;
   renderEtapa();
