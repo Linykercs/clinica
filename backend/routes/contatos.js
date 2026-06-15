@@ -1,18 +1,8 @@
-/**
- * routes/contatos.js — Formulário de contato (público).
- *
- * POST /api/contatos
- *   Salva uma mensagem enviada pelo visitante do site.
- *   Todos os campos são obrigatórios: nome, email, assunto, mensagem.
- *   O admin pode visualizar as mensagens em GET /api/admin/contatos.
- *
- * Resposta: { mensagem: "Mensagem recebida com sucesso!", contato: <doc> }
- */
-
 const express = require("express");
 const router  = express.Router();
 const Contato = require("../models/08_contatos");
 
+// Enviar mensagem de contato
 router.post("/", async (req, res) => {
   try {
     const { nome, email, assunto, mensagem } = req.body;

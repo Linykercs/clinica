@@ -1,20 +1,6 @@
-/**
- * api.js — Cliente HTTP centralizado para comunicação com o backend.
- *
- * Todas as páginas do frontend importam este arquivo para fazer chamadas
- * à API REST hospedada no Railway. O token JWT do admin é injetado
- * automaticamente quando presente no localStorage.
- */
-
 const API_URL = "https://clinica-production-3c98.up.railway.app/api";
 
-/**
- * Função base de requisição. Injeta Content-Type e Authorization (se logado),
- * depois lança um Error com a mensagem do backend em caso de resposta não-ok.
- * @param {string} path - Caminho relativo ao API_URL (ex: "/servicos")
- * @param {RequestInit} options - Opções extras do fetch (method, body, etc.)
- * @returns {Promise<any>} JSON retornado pelo servidor
- */
+// Funcao base de requisicao (injeta token JWT quando logado)
 async function req(path, options = {}) {
   const token = localStorage.getItem("token_admin");
   const headers = { "Content-Type": "application/json", ...options.headers };
@@ -26,96 +12,33 @@ async function req(path, options = {}) {
   return data;
 }
 
-/**
- * Objeto com todos os endpoints disponíveis, agrupados por domínio.
- *
- * Rotas públicas (não exigem token):
- *   getServicos, getHorarios, criarAgendamento, entrarFila, chatbot, enviarContato
- *
- * Rotas de admin (exigem token JWT via header Authorization):
- *   login, getDashboard, getAgendamentos, atualizarStatus, criarHorarios, getContatos
- */
 const API = {
-  // ── Público ──────────────────────────────────────────────────────────────
-  /** Retorna lista de serviços ativos. */
+  // Buscar lista de servicos
   getServicos: () => req("/servicos"),
-
-  /**
-   * Retorna horários disponíveis para um serviço em uma data.
-   * @param {string} data - Data no formato YYYY-MM-DD
-   * @param {string} servicoId - ObjectId do serviço
-   */
+  // Buscar horarios disponiveis por data e servico
   getHorarios: (data, servicoId) => req(`/horarios?data=${data}&servico=${servicoId}`),
-
-  /**
-   * Cria um novo agendamento para um paciente.
-   * @param {{ horario_id, paciente_nome, paciente_email, paciente_telefone, observacoes }} body
-   */
+  // Criar agendamento
   criarAgendamento: (body) => req("/agendamentos", { method: "POST", body: JSON.stringify(body) }),
-
-  /**
-   * Reagenda um agendamento existente para outro horário.
-   * @param {string} id - ObjectId do agendamento
-   * @param {{ horario_id, motivo }} body
-   */
+  // Reagendar consulta
   reagendar: (id, body) => req(`/agendamentos/${id}/reagendar`, { method: "POST", body: JSON.stringify(body) }),
-
-  /**
-   * Cancela um agendamento. Libera o horário e notifica o próximo na fila.
-   * @param {string} id - ObjectId do agendamento
-   */
+  // Cancelar agendamento
   cancelar: (id) => req(`/agendamentos/${id}/cancelar`, { method: "POST" }),
-
-  /**
-   * Insere o paciente na fila de espera de um horário ocupado.
-   * @param {string} horarioId - ObjectId do horário
-   * @param {{ paciente_nome, paciente_email, paciente_telefone }} body
-   */
+  // Entrar na fila de espera
   entrarFila: (horarioId, body) => req(`/agendamentos/${horarioId}/fila`, { method: "POST", body: JSON.stringify(body) }),
-
-  /**
-   * Consulta o chatbot com uma pergunta em texto livre.
-   * O backend busca palavras-chave nas FAQs cadastradas.
-   * @param {string} pergunta
-   */
+  // Enviar pergunta ao chatbot
   chatbot: (pergunta) => req(`/chatbot?pergunta=${encodeURIComponent(pergunta)}`),
-
-  /**
-   * Envia uma mensagem pelo formulário de contato.
-   * @param {{ nome, email, assunto, mensagem }} body
-   */
+  // Enviar mensagem de contato
   enviarContato: (body) => req("/contatos", { method: "POST", body: JSON.stringify(body) }),
-
-  // ── Admin (requer JWT) ────────────────────────────────────────────────────
-  /**
-   * Autentica o administrador e retorna o token JWT (validade 8h).
-   * @param {string} email
-   * @param {string} senha
-   */
+  // Fazer login admin
   login: (email, senha) => req("/admin/login", { method: "POST", body: JSON.stringify({ email, senha }) }),
-
-  /** Retorna contadores do dashboard: total, pendentes, confirmados, hoje, contatos não respondidos. */
+  // Buscar dados do dashboard
   getDashboard: () => req("/admin/dashboard"),
-
-  /**
-   * Lista agendamentos, com filtro opcional por status.
-   * @param {string} [status] - "pendente" | "confirmado" | "concluido" | "cancelado"
-   */
+  // Listar agendamentos (admin)
   getAgendamentos: (status) => req(`/admin/agendamentos${status ? `?status=${status}` : ""}`),
-
-  /**
-   * Atualiza o status de um agendamento (PATCH).
-   * @param {string} id - ObjectId do agendamento
-   * @param {string} status - Novo status
-   */
+  // Atualizar status do agendamento
   atualizarStatus: (id, status) => req(`/admin/agendamentos/${id}`, { method: "PATCH", body: JSON.stringify({ status }) }),
-
-  /**
-   * Cria slots de horários disponíveis em lote para um serviço.
-   * @param {{ servico_id, data, slots: string[], duracao_min }} body
-   */
+  // Cadastrar horarios disponiveis
   criarHorarios: (body) => req("/admin/horarios", { method: "POST", body: JSON.stringify(body) }),
-
-  /** Lista todas as mensagens de contato recebidas, ordenadas por data desc. */
+  // Listar mensagens de contato (admin)
   getContatos: () => req("/admin/contatos"),
 };

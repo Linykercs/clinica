@@ -1,18 +1,4 @@
-/**
- * models/05_historico_reagendamentos.js — Histórico de alterações de horário.
- *
- * Registra cada vez que um agendamento troca de horário.
- * Permite auditoria e rastreamento do limite de 2 reagendamentos por paciente.
- *
- * Campos:
- *   agendamento_id      - Referência ao Agendamento alterado
- *   horario_anterior_id - Slot anterior (liberado após o reagendamento)
- *   horario_novo_id     - Slot novo (ocupado após o reagendamento)
- *   motivo              - Justificativa informada pelo paciente (opcional)
- *
- * Timestamp: reagendado_em (criado_em); sem atualizado_em pois é imutável.
- */
-
+// Model de historico de reagendamentos (auditoria)
 const mongoose = require("mongoose");
 
 const historicoSchema = new mongoose.Schema({

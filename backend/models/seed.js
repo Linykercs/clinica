@@ -1,19 +1,5 @@
-/**
- * models/seed.js — Script de população inicial do banco de dados.
- *
- * Uso: node backend/models/seed.js
- *
- * ATENÇÃO: apaga e recria os dados de Administrador, Servico,
- * HorarioDisponivel e ChatbotFaq. Não afeta Agendamentos nem Contatos.
- * Use apenas em ambiente de desenvolvimento ou na primeira configuração.
- *
- * Cria:
- *   - 1 admin: admin@clinica.com / admin123
- *   - 4 serviços pré-configurados
- *   - Slots de horário para os próximos 5 dias úteis (08h–16h)
- *   - 5 FAQs iniciais para o chatbot
- */
-
+// Script de seed: popula o banco com dados iniciais (dev/primeira configuracao)
+// ATENCAO: apaga e recria Administrador, Servico, HorarioDisponivel e ChatbotFaq
 const mongoose = require("mongoose");
 const bcrypt   = require("bcryptjs");
 require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
@@ -33,10 +19,12 @@ async function seed() {
   await HorarioDisponivel.deleteMany({});
   await ChatbotFaq.deleteMany({});
 
+  // Criar admin padrao
   const senhaHash = await bcrypt.hash("admin123", 10);
   await Administrador.create({ nome: "Administrador", email: "admin@clinica.com", senha_hash: senhaHash });
   console.log("✅ Admin criado: admin@clinica.com / admin123");
 
+  // Criar servicos iniciais
   const servicos = await Servico.insertMany([
     { nome: "Consulta Inicial",            descricao: "Avaliação geral",            duracao_min: 60 },
     { nome: "Terapia de Rejuvenescimento", descricao: "Tratamento estético",        duracao_min: 90 },
@@ -45,6 +33,7 @@ async function seed() {
   ]);
   console.log(`✅ ${servicos.length} serviços criados`);
 
+  // Criar horarios para os proximos 5 dias
   const hoje  = new Date(); hoje.setHours(0, 0, 0, 0);
   const slots = ["08:00","09:00","10:00","11:00","14:00","15:00","16:00"];
   const horarios = [];
@@ -64,6 +53,7 @@ async function seed() {
   await HorarioDisponivel.insertMany(horarios);
   console.log(`✅ ${horarios.length} horários criados`);
 
+  // Criar FAQs iniciais do chatbot
   await ChatbotFaq.insertMany([
     { pergunta: "Horários de funcionamento?",   resposta: "Segunda a sexta 08h às 18h, sábados 08h às 12h.", categoria: "horarios",    palavras_chave: ["horario","funcionamento","aberto"], ordem: 1 },
     { pergunta: "Como agendar uma consulta?",   resposta: "Clique em Agendar Consulta e escolha o horário.", categoria: "agendamento", palavras_chave: ["agendar","marcar","consulta"],      ordem: 2 },

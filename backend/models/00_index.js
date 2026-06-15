@@ -1,20 +1,4 @@
-/**
- * models/00_index.js — Barrel de exportação de todos os modelos Mongoose.
- *
- * Importar daqui evita caminhos relativos duplicados nos routes:
- *   const { Agendamento, Servico } = require("../models");
- *
- * Ordem dos modelos reflete a hierarquia de dependências:
- *   Administrador → sem dependências
- *   Servico       → sem dependências
- *   HorarioDisponivel → ref Servico
- *   Agendamento   → ref HorarioDisponivel
- *   HistoricoReagendamento → ref Agendamento + HorarioDisponivel
- *   FilaEspera    → ref HorarioDisponivel
- *   ChatbotFaq    → sem dependências
- *   Contato       → sem dependências
- */
-
+// Exportar todos os models
 const Administrador          = require("./01_administradores");
 const Servico                = require("./02_servicos");
 const HorarioDisponivel      = require("./03_horarios_disponiveis");
