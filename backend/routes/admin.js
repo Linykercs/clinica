@@ -70,11 +70,15 @@ router.get("/dashboard", auth, async (req, res) => {
     const hoje   = new Date(); hoje.setHours(0, 0, 0, 0);
     const amanha = new Date(hoje); amanha.setDate(hoje.getDate() + 1);
 
+    // Buscar horarios cuja data de consulta e hoje
+    const horariosHoje = await HorarioDisponivel.find({ data: { $gte: hoje, $lt: amanha } }).select("_id");
+    const idsHoje = horariosHoje.map(h => h._id);
+
     const [total, pendentes, confirmados, hojeCount, contatos] = await Promise.all([
       Agendamento.countDocuments(),
       Agendamento.countDocuments({ status: "pendente" }),
       Agendamento.countDocuments({ status: "confirmado" }),
-      Agendamento.countDocuments({ criado_em: { $gte: hoje, $lt: amanha } }),
+      Agendamento.countDocuments({ horario_id: { $in: idsHoje } }),
       Contato.countDocuments({ respondido: false }),
     ]);
 
