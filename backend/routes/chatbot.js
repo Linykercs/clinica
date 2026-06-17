@@ -15,13 +15,18 @@ router.get("/", async (req, res) => {
       .split(/\s+/)
       .filter((p) => p.length > 2);
 
-    const faqs = await ChatbotFaq.find({ ativo: true, palavras_chave: { $in: palavras } }).sort("ordem");
+    const faqs = await ChatbotFaq.find({ ativo: true, palavras_chave: { $in: palavras } });
 
     if (!faqs.length) {
       return res.json({ resposta: "Não encontrei resposta. Entre em contato pelo formulário.", encontrou: false });
     }
 
-    res.json({ resposta: faqs[0].resposta, encontrou: true });
+    // Score by number of matching keywords, break ties by ordem
+    const melhor = faqs
+      .map(f => ({ faq: f, score: palavras.filter(p => f.palavras_chave.includes(p)).length }))
+      .sort((a, b) => b.score - a.score || a.faq.ordem - b.faq.ordem)[0];
+
+    res.json({ resposta: melhor.faq.resposta, encontrou: true });
   } catch (err) {
     res.status(500).json({ erro: "Erro no chatbot." });
   }
