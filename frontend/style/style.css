@@ -109,15 +109,20 @@ a    { text-decoration: none; color: inherit; }
 @media (max-width: 640px) {
   .nav-links {
     display: none; flex-direction: column; gap: 20px;
-    position: absolute; top: var(--nav-h); left: 0; right: 0;
+    position: fixed; top: var(--nav-h); left: 0; right: 0;
     background: var(--bg); padding: 24px 32px;
     border-bottom: 1px solid rgba(181,165,148,0.2);
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    z-index: 99;
   }
   .nav-links.open { display: flex; }
   .nav-toggle { display: flex; }
-  .navbar { position: relative; }
   .footer-container { grid-template-columns: 1fr; gap: 40px; padding: 0 24px 40px; }
   .footer-bottom { padding: 20px 24px; }
   .container { padding: 0 20px; }
+}
+
+@media (max-width: 380px) {
+  .nav-container { padding: 0 16px; }
+  .container { padding: 0 16px; }
 }

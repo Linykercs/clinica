@@ -3,7 +3,7 @@
    ============================================================ */
 
 /* ── LAYOUT ADMIN ── */
-.admin-app { display: flex; height: 100vh; overflow: hidden; background: #f5f3ef; }
+.admin-app { display: flex; height: 100vh; height: 100dvh; overflow: hidden; background: #f5f3ef; }
 
 /* Sidebar */
 .admin-sidebar {
@@ -153,7 +153,14 @@
 
 /* Responsivo admin */
 @media (max-width: 640px) {
-  .admin-toolbar { flex-wrap: wrap; }
+  .admin-toolbar { flex-wrap: wrap; gap: 8px; justify-content: flex-start; }
+  .admin-toolbar__group { flex: 1; min-width: 0; }
+  .admin-toolbar__group input,
+  .admin-toolbar__group select { width: 100%; min-width: 0; }
+  .admin-btn-new { align-self: flex-end; }
   .dash-cards { grid-template-columns: repeat(2,1fr); }
-  .admin-content { padding: 16px; }
+  .admin-content { padding: 14px; }
+  .admin-header { padding: 0 16px; }
+  .admin-header__nome { display: none; }
+  .admin-modal { width: calc(100vw - 40px); margin: 0 20px; }
 }

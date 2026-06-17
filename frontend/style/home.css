@@ -96,7 +96,19 @@
   .cta-decorativo { display: none; }
 }
 @media (max-width: 640px) {
+  .hero { padding: 40px 0 32px; }
   .hero-text h1 { font-size: 32px; }
   .stats-grid { gap: 32px; }
   .stat h2 { font-size: 36px; }
+  .cta-text p { font-size: 20px; }
+  .cta-overlay { padding: 48px 20px; gap: 0; }
+  .hero-btns { flex-direction: column; align-items: flex-start; }
+  .hero-btns .btn-primary,
+  .hero-btns .btn-outline { width: 100%; text-align: center; }
+}
+
+@media (max-width: 380px) {
+  .hero-text h1 { font-size: 28px; }
+  .stat h2 { font-size: 30px; }
+  .cta-text p { font-size: 18px; }
 }

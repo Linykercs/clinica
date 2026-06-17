@@ -57,3 +57,7 @@
   .maquina-hero { padding: 40px 0 48px; }
   .beneficios { padding: 48px 0; }
 }
+
+@media (max-width: 380px) {
+  .maquina-hero-text h1 { font-size: 26px; }
+}

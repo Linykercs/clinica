@@ -51,7 +51,16 @@
 
 .login-erro { display: none; text-align: center; margin-top: 12px; font-size: 11px; color: #ffe0e0; }
 
+@media (max-width: 480px) {
+  .login-page { align-items: flex-start; padding-top: 100px; }
+  .login-brand { left: 24px; top: 28px; }
+  .login-brand__name { font-size: 20px; }
+}
+
 @media (max-width: 400px) {
-  .login-card { padding: 32px 24px 28px; }
-  .login-brand { left: 20px; }
+  .login-card { padding: 32px 24px 28px; max-width: 90%; }
+  .login-brand { left: 16px; top: 24px; }
+  .login-brand__name { font-size: 18px; letter-spacing: 0.12em; }
+  .blob--bl { width: 340px; height: 300px; }
+  .blob--tr { width: 320px; height: 340px; }
 }

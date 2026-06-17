@@ -197,7 +197,17 @@ html, body { min-height: 100%; font-family: 'Raleway', sans-serif; background: v
   .field.full { grid-column: 1; }
   .header { padding: 16px 20px; }
   .page { padding: 32px 16px 60px; }
+  .page__title { font-size: 28px; }
   .card { padding: 24px 20px; }
+}
+
+@media (max-width: 400px) {
+  .step__label { display: none; }
+  .step__line { margin: 0 6px; }
+  .page__title { font-size: 24px; }
+  .horarios-grid { grid-template-columns: repeat(2, 1fr); }
+  .resumo__linha { flex-direction: column; gap: 2px; }
+  .resumo__valor { font-size: 12px; }
 }
 </style>
 </head>
