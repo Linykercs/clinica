@@ -6,7 +6,7 @@
 .sobre-hero { width: 100%; overflow: hidden; }
 .sobre-hero-img {
   width: 100%; max-height: 520px;
-  object-fit: cover; object-position: center top;
+  object-fit: cover; object-position: center 60%;
   display: block;
 }
 

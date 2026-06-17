@@ -46,13 +46,70 @@
   </div>
 </section>
 
-<!-- Foto do local da clinica -->
+<!-- Carrossel do local da clinica -->
 <section class="nosso-local">
   <div class="container"><h2>Nosso local</h2></div>
-  <div class="local-img-wrapper">
-    <img src="img/clinica.jpg" alt="Clínica Flávia Franco"/>
+  <div class="carrossel">
+    <div class="carrossel-track" id="carrosselTrack">
+      <img src="img/clinica.jpg"     alt="Clínica Flávia Franco"/>
+      <img src="img/equipamento.jpg" alt="Clínica Flávia Franco"/>
+      <img src="img/ambiente.jpg"    alt="Clínica Flávia Franco"/>
+    </div>
+    <button class="carrossel-btn carrossel-btn--prev" onclick="moverCarrossel(-1)">&#8249;</button>
+    <button class="carrossel-btn carrossel-btn--next" onclick="moverCarrossel(1)">&#8250;</button>
+    <div class="carrossel-dots" id="carrosselDots">
+      <span class="carrossel-dot active" onclick="irParaSlide(0)"></span>
+      <span class="carrossel-dot" onclick="irParaSlide(1)"></span>
+      <span class="carrossel-dot" onclick="irParaSlide(2)"></span>
+    </div>
   </div>
 </section>
+
+<style>
+.carrossel { position: relative; overflow: hidden; width: 100%; }
+.carrossel-track { display: flex; transition: transform 0.55s ease; }
+.carrossel-track img { min-width: 100%; max-height: 480px; object-fit: cover; object-position: center; display: block; }
+.carrossel-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(181,165,148,0.85); color: #fff;
+  border: none; width: 48px; height: 48px; border-radius: 50%;
+  font-size: 28px; line-height: 1; cursor: pointer; z-index: 10;
+  transition: background 0.2s;
+}
+.carrossel-btn:hover { background: #9a8978; }
+.carrossel-btn--prev { left: 16px; }
+.carrossel-btn--next { right: 16px; }
+.carrossel-dots { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+.carrossel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.55); cursor: pointer; transition: background 0.2s; }
+.carrossel-dot.active { background: #fff; }
+</style>
+
+<script>
+(function() {
+  var slide = 0, total = 3, timer;
+  function atualizar() {
+    document.getElementById("carrosselTrack").style.transform = "translateX(-" + (slide * 100) + "%)";
+    document.querySelectorAll(".carrossel-dot").forEach(function(d, i) {
+      d.classList.toggle("active", i === slide);
+    });
+  }
+  window.moverCarrossel = function(dir) {
+    slide = (slide + dir + total) % total;
+    atualizar();
+    resetTimer();
+  };
+  window.irParaSlide = function(i) {
+    slide = i;
+    atualizar();
+    resetTimer();
+  };
+  function resetTimer() {
+    clearInterval(timer);
+    timer = setInterval(function() { moverCarrossel(1); }, 4500);
+  }
+  resetTimer();
+})();
+</script>
 
 <footer class="footer">
   <div class="footer-container">
