@@ -1,6 +1,7 @@
-const express  = require("express");
-const mongoose = require("mongoose");
-const cors     = require("cors");
+const express   = require("express");
+const mongoose  = require("mongoose");
+const cors      = require("cors");
+const rateLimit = require("express-rate-limit");
 require("dotenv").config();
 
 const app = express();
@@ -19,6 +20,8 @@ app.use(cors({
   },
 }));
 app.use(express.json());
+
+app.use("/api/chatbot", rateLimit({ windowMs: 60_000, max: 30, standardHeaders: true, legacyHeaders: false }));
 
 // Registrar rotas
 app.use("/api/servicos",     require("./routes/servicos"));

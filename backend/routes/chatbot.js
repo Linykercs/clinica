@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
     const faqs = await ChatbotFaq.find({ ativo: true, palavras_chave: { $in: palavras } });
 
     if (!faqs.length) {
-      return res.json({ resposta: "Não encontrei resposta. Entre em contato pelo formulário.", encontrou: false });
+      return res.json({ resposta: "Não encontrei resposta para isso. Fale conosco pelo WhatsApp (34) 3479-8570 ou use o formulário de contato!", encontrou: false });
     }
 
     // Score by number of matching keywords, break ties by ordem

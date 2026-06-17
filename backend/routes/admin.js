@@ -145,6 +145,22 @@ router.post("/faqs/seed", auth, async (req, res) => {
   }
 });
 
+// Atualizar uma FAQ
+router.patch("/faqs/:id", auth, async (req, res) => {
+  try {
+    const { pergunta, resposta, palavras_chave, categoria, ordem } = req.body;
+    const faq = await ChatbotFaq.findByIdAndUpdate(
+      req.params.id,
+      { ...(pergunta && { pergunta }), ...(resposta && { resposta }), ...(palavras_chave && { palavras_chave }), ...(categoria && { categoria }), ...(ordem !== undefined && { ordem }) },
+      { new: true }
+    );
+    if (!faq) return res.status(404).json({ erro: "FAQ não encontrada." });
+    res.json({ mensagem: "FAQ atualizada.", faq });
+  } catch (err) {
+    res.status(500).json({ erro: "Erro ao atualizar FAQ." });
+  }
+});
+
 // Deletar uma FAQ
 router.delete("/faqs/:id", auth, async (req, res) => {
   try {
