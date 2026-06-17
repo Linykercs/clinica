@@ -84,6 +84,37 @@ router.get("/dashboard", auth, async (req, res) => {
   }
 });
 
+// Seed de agendamentos fictícios (para demo/apresentação)
+router.post("/agendamentos/seed", auth, async (req, res) => {
+  try {
+    const { agendamentos } = req.body;
+    if (!Array.isArray(agendamentos) || !agendamentos.length) {
+      return res.status(400).json({ erro: "Envie um array 'agendamentos'." });
+    }
+    let criados = 0;
+    for (const a of agendamentos) {
+      const [h, m] = a.hora_inicio.split(":").map(Number);
+      const total = h * 60 + m + (a.duracao_min || 60);
+      const hora_fim = `${String(Math.floor(total/60)).padStart(2,"0")}:${String(total%60).padStart(2,"0")}`;
+      const horario = await HorarioDisponivel.create({
+        servico_id: a.servico_id, data: new Date(a.data),
+        hora_inicio: a.hora_inicio, hora_fim, ocupado: true,
+      });
+      const doc = new Agendamento({
+        horario_id: horario._id, paciente_nome: a.paciente_nome,
+        paciente_email: a.paciente_email, paciente_telefone: a.paciente_telefone,
+        status: a.status || "pendente", origem: "admin",
+      });
+      if (a.criado_em) doc.criado_em = new Date(a.criado_em);
+      await doc.save();
+      criados++;
+    }
+    res.status(201).json({ mensagem: `${criados} agendamentos criados.` });
+  } catch (err) {
+    res.status(500).json({ erro: "Erro ao criar agendamentos seed." });
+  }
+});
+
 // Cadastrar horarios disponiveis
 router.post("/horarios", auth, async (req, res) => {
   try {
