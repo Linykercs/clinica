@@ -64,6 +64,18 @@ router.patch("/agendamentos/:id", auth, async (req, res) => {
   }
 });
 
+// Deletar agendamento e liberar o horario
+router.delete("/agendamentos/:id", auth, async (req, res) => {
+  try {
+    const agendamento = await Agendamento.findByIdAndDelete(req.params.id);
+    if (!agendamento) return res.status(404).json({ erro: "Não encontrado." });
+    await HorarioDisponivel.findByIdAndUpdate(agendamento.horario_id, { ocupado: false });
+    res.json({ mensagem: "Agendamento removido." });
+  } catch (err) {
+    res.status(500).json({ erro: "Erro ao remover agendamento." });
+  }
+});
+
 // Buscar dados do dashboard (totais e contadores)
 router.get("/dashboard", auth, async (req, res) => {
   try {
