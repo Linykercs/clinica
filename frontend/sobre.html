@@ -88,6 +88,12 @@
       <img src="img/clinica.jpg"     alt="Clínica Flávia Franco"/>
       <img src="img/equipamento.jpg" alt="Clínica Flávia Franco"/>
       <img src="img/ambiente.jpg"    alt="Clínica Flávia Franco"/>
+      <img src="img/clinica.jpg"     alt="Clínica Flávia Franco"/>
+      <img src="img/equipamento.jpg" alt="Clínica Flávia Franco"/>
+      <img src="img/ambiente.jpg"    alt="Clínica Flávia Franco"/>
+      <img src="img/clinica.jpg"     alt="Clínica Flávia Franco"/>
+      <img src="img/equipamento.jpg" alt="Clínica Flávia Franco"/>
+      <img src="img/ambiente.jpg"    alt="Clínica Flávia Franco"/>
     </div>
     <button class="carrossel-btn carrossel-btn--prev" onclick="moverCarrossel(-1)">&#8249;</button>
     <button class="carrossel-btn carrossel-btn--next" onclick="moverCarrossel(1)">&#8250;</button>
@@ -101,9 +107,9 @@
 
 <style>
 .carrossel { position: relative; overflow: hidden; width: 100%; line-height: 0; }
-.carrossel-track { display: flex; transition: transform 0.55s ease; height: 480px; }
-.carrossel-track img { min-width: 100%; width: 100%; height: 480px; object-fit: cover; object-position: center; display: block; flex-shrink: 0; }
-@media (max-width: 640px) { .carrossel-track, .carrossel-track img { height: 260px; } }
+.carrossel-track { display: flex; transition: transform 0.55s ease; }
+.carrossel-track img { height: 380px; object-fit: cover; object-position: center; display: block; flex-shrink: 0; }
+@media (max-width: 640px) { .carrossel-track img { height: 200px; } }
 .carrossel-btn {
   position: absolute; top: 50%; transform: translateY(-50%);
   background: rgba(181,165,148,0.85); color: #fff;
@@ -121,27 +127,48 @@
 
 <script>
 (function() {
-  var slide = 0, total = 3, timer;
-  function atualizar() {
-    document.getElementById("carrosselTrack").style.transform = "translateX(-" + (slide * 100) + "%)";
-    document.querySelectorAll(".carrossel-dot").forEach(function(d, i) {
-      d.classList.toggle("active", i === slide);
+  var N = 3, visible = 3, pos = N, timer;
+  var track = document.getElementById('carrosselTrack');
+  var imgs = track.querySelectorAll('img');
+
+  function imgW() { return track.parentElement.offsetWidth / visible; }
+
+  function setWidths() {
+    var w = imgW();
+    Array.from(imgs).forEach(function(img) { img.style.width = w + 'px'; });
+  }
+
+  function update(animate) {
+    track.style.transition = animate ? 'transform 0.55s ease' : 'none';
+    track.style.transform = 'translateX(' + (-pos * imgW()) + 'px)';
+    var dot = pos % N;
+    document.querySelectorAll('.carrossel-dot').forEach(function(d, i) {
+      d.classList.toggle('active', i === dot);
     });
   }
+
   window.moverCarrossel = function(dir) {
-    slide = (slide + dir + total) % total;
-    atualizar();
+    pos += dir;
+    update(true);
+    setTimeout(function() {
+      if (pos >= N * 2) { pos -= N; update(false); }
+      else if (pos < N)  { pos += N; update(false); }
+    }, 560);
     resetTimer();
   };
+
   window.irParaSlide = function(i) {
-    slide = i;
-    atualizar();
-    resetTimer();
+    pos = N + i; update(true); resetTimer();
   };
+
   function resetTimer() {
     clearInterval(timer);
     timer = setInterval(function() { moverCarrossel(1); }, 4500);
   }
+
+  setWidths();
+  update(false);
+  window.addEventListener('resize', function() { setWidths(); update(false); });
   resetTimer();
 })();
 </script>
