@@ -5,9 +5,12 @@ require("dotenv").config();
 
 const app = express();
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",")
-  : ["http://localhost:5500", "http://127.0.0.1:5500"];
+const allowedOrigins = [
+  "https://linykercs.github.io",
+  "http://localhost:5500",
+  "http://127.0.0.1:5500",
+  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",") : []),
+];
 
 app.use(cors({
   origin: (origin, cb) => {
