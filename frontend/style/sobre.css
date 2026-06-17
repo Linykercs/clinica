@@ -14,7 +14,12 @@
 .quem-somos { background: var(--white); padding: 64px 0; }
 .quem-somos h2 {
   font-family: var(--serif); font-size: 36px; font-weight: 400;
-  text-align: center; margin-bottom: 40px; color: var(--text);
+  text-align: center; margin-bottom: 0; color: var(--text);
+}
+.quem-somos h2::after {
+  content: ''; display: block;
+  width: 48px; height: 2px;
+  background: var(--taupe); margin: 18px auto 40px;
 }
 .quem-somos-text { max-width: 780px; }
 .quem-somos-text p {

@@ -30,6 +30,13 @@
 }
 .beneficio-card {
   background: var(--white); border-radius: 8px; padding: 22px;
+  border-left: 3px solid var(--taupe-light);
+  transition: border-left-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+}
+.beneficio-card:hover {
+  border-left-color: var(--taupe-dark);
+  box-shadow: 0 6px 20px rgba(181,165,148,0.2);
+  transform: translateY(-3px);
 }
 .beneficio-card h3 {
   font-size: 13px; font-weight: 600; color: var(--text);

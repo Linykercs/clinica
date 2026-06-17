@@ -101,6 +101,10 @@ a    { text-decoration: none; color: inherit; }
 }
 .btn-outline:hover { background: var(--taupe); color: var(--white); }
 
+/* ── SCROLL ANIMATIONS ── */
+.fade-up { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+.fade-up.visible { opacity: 1; transform: none; }
+
 /* ── RESPONSIVO GLOBAL ── */
 @media (max-width: 640px) {
   .nav-links {

@@ -39,6 +39,13 @@
 .servico-card-item {
   background: var(--white); border-radius: 8px;
   padding: 22px; display: flex; flex-direction: column; gap: 10px;
+  border-top: 3px solid transparent;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-top-color 0.22s ease;
+}
+.servico-card-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(181,165,148,0.22);
+  border-top-color: var(--taupe);
 }
 .servico-card-item h4 {
   font-size: 13px; font-weight: 600; color: var(--taupe);

@@ -12,6 +12,11 @@
   font-family: var(--serif); font-size: 52px; font-weight: 300;
   line-height: 1.1; color: var(--text); margin-bottom: 20px;
 }
+.hero-text h1::before {
+  content: ''; display: block;
+  width: 44px; height: 2px;
+  background: var(--taupe); margin-bottom: 24px;
+}
 .hero-text p {
   font-size: 14px; color: var(--text-muted); line-height: 1.7;
   margin-bottom: 32px; max-width: 380px;
@@ -44,9 +49,11 @@
 .hero-card > img { width: 60px; height: 60px; object-fit: contain; flex-shrink: 0; }
 
 /* ── STATS ── */
-.stats { background: var(--bg); padding: 40px 0 60px; }
+.stats { background: var(--bg); padding: 40px 0 60px; border-top: 1px solid rgba(181,165,148,0.25); }
 .stats-grid { display: flex; gap: 60px; }
-.stat h2 { font-family: var(--serif); font-size: 48px; font-weight: 400; color: var(--text); }
+.stat { position: relative; padding-left: 20px; }
+.stat::before { content: ''; position: absolute; left: 0; top: 8px; width: 3px; height: 44px; background: var(--taupe); border-radius: 2px; }
+.stat h2 { font-family: var(--serif); font-size: 48px; font-weight: 400; color: var(--taupe-dark); }
 .stat p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
 /* ── CTA BANNER ── */
