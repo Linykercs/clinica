@@ -7,6 +7,7 @@ const Administrador     = require("../models/01_administradores");
 const Agendamento       = require("../models/04_agendamentos");
 const HorarioDisponivel = require("../models/03_horarios_disponiveis");
 const Contato           = require("../models/08_contatos");
+const ChatbotFaq        = require("../models/07_chatbot_faqs");
 
 // Fazer login admin
 router.post("/login", async (req, res) => {
@@ -113,6 +114,44 @@ router.get("/contatos", auth, async (req, res) => {
     res.json(contatos);
   } catch (err) {
     res.status(500).json({ erro: "Erro ao listar contatos." });
+  }
+});
+
+// Listar FAQs do chatbot
+router.get("/faqs", auth, async (req, res) => {
+  try {
+    const faqs = await ChatbotFaq.find().sort("ordem");
+    res.json(faqs);
+  } catch (err) {
+    res.status(500).json({ erro: "Erro ao listar FAQs." });
+  }
+});
+
+// Inserir multiplas FAQs (pula duplicatas pela pergunta)
+router.post("/faqs/seed", auth, async (req, res) => {
+  try {
+    const { faqs } = req.body;
+    if (!Array.isArray(faqs) || !faqs.length) {
+      return res.status(400).json({ erro: "Envie um array 'faqs'." });
+    }
+    let adicionadas = 0;
+    for (const faq of faqs) {
+      const existe = await ChatbotFaq.findOne({ pergunta: faq.pergunta });
+      if (!existe) { await ChatbotFaq.create(faq); adicionadas++; }
+    }
+    res.json({ mensagem: `${adicionadas} FAQs adicionadas.`, total: faqs.length });
+  } catch (err) {
+    res.status(500).json({ erro: "Erro ao inserir FAQs." });
+  }
+});
+
+// Deletar uma FAQ
+router.delete("/faqs/:id", auth, async (req, res) => {
+  try {
+    await ChatbotFaq.findByIdAndDelete(req.params.id);
+    res.json({ mensagem: "FAQ removida." });
+  } catch (err) {
+    res.status(500).json({ erro: "Erro ao deletar FAQ." });
   }
 });
 
