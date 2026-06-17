@@ -63,7 +63,7 @@
 }
 
 /* ── NOSSO LOCAL ── */
-.nosso-local { background: var(--white); padding: 0 0 72px; }
+.nosso-local { background: var(--white); padding: 0 0 0; }
 .nosso-local .container h2 {
   font-family: var(--serif); font-size: 36px; font-weight: 400;
   text-align: center; margin-bottom: 32px; color: var(--text);
